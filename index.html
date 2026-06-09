@@ -11,19 +11,17 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --gold:       #9A7B3F;
-      --gold-light: #C4A35A;
-      --gold-pale:  #E8D5A3;
-      --gold-dim:   rgba(154,123,63,0.12);
-      --cream:      #FAF7F2;
-      --ivory:      #F3EDE3;
-      --ivory2:     #EDE5D8;
-      --white:      #FFFFFF;
-      --ink:        #1A1410;
-      --ink2:       #2C2419;
-      --ink3:       #3D3228;
-      --muted:      rgba(26,20,16,0.45);
-      --muted2:     rgba(26,20,16,0.25);
+      --gold:      #9A7B3F;
+      --gold-l:    #C4A35A;
+      --gold-pale: #E8D5A3;
+      --gold-dim:  rgba(154,123,63,0.1);
+      --cream:     #FAF7F2;
+      --ivory:     #F3EDE3;
+      --ivory2:    #EDE5D8;
+      --white:     #FFFFFF;
+      --ink:       #1A1410;
+      --muted:     rgba(26,20,16,0.45);
+      --muted2:    rgba(26,20,16,0.22);
     }
 
     html { scroll-behavior: smooth; }
@@ -33,728 +31,656 @@
       font-family: 'Montserrat', sans-serif;
       font-weight: 300;
       overflow-x: hidden;
-      cursor: none;
     }
 
-    /* ── CUSTOM CURSOR ── */
-    .cursor {
-      position: fixed; width: 8px; height: 8px; border-radius: 50%;
-      background: var(--gold); pointer-events: none; z-index: 9999;
-      transform: translate(-50%,-50%);
-      transition: width .3s, height .3s;
-    }
-    .cursor-ring {
-      position: fixed; width: 38px; height: 38px; border-radius: 50%;
-      border: 1px solid rgba(154,123,63,.5); pointer-events: none; z-index: 9998;
-      transform: translate(-50%,-50%);
-      transition: width .3s, height .3s, opacity .3s;
-    }
-
-    /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: var(--ivory); }
+    ::-webkit-scrollbar-track { background: var(--cream); }
     ::-webkit-scrollbar-thumb { background: var(--gold); }
 
     /* ── LOADER ── */
     #loader {
       position: fixed; inset: 0; z-index: 10000;
-      background: var(--ink); display: flex; flex-direction: column;
+      background: var(--ink);
+      display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 28px;
     }
     .ld-logo {
-      font-family: 'Cormorant Garamond', serif; font-size: 22px;
-      letter-spacing: 10px; text-transform: uppercase; color: var(--gold-pale);
-      opacity: 0; animation: fadeIn .8s ease .3s forwards;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; letter-spacing: 10px; text-transform: uppercase;
+      color: var(--gold-pale);
+      opacity: 0; animation: fadeUp .8s ease .3s forwards;
     }
-    .ld-bar { width: 200px; height: 1px; background: rgba(255,255,255,.1); overflow: hidden; }
+    .ld-bar  { width: 200px; height: 1px; background: rgba(255,255,255,.1); overflow: hidden; }
     .ld-fill {
-      height: 100%; background: var(--gold-light);
+      height: 100%; background: var(--gold-l);
       transform: scaleX(0); transform-origin: left;
-      animation: barFill 1.8s cubic-bezier(.4,0,.2,1) .5s forwards;
+      animation: fillBar 1.8s cubic-bezier(.4,0,.2,1) .4s forwards;
     }
     .ld-sub {
-      font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
-      color: rgba(255,255,255,.3);
-      opacity: 0; animation: fadeIn .8s ease .6s forwards;
+      font-size: 9px; letter-spacing: 4px; color: rgba(255,255,255,.3); text-transform: uppercase;
+      opacity: 0; animation: fadeUp .8s ease .6s forwards;
     }
-    @keyframes barFill { to { transform: scaleX(1); } }
-    @keyframes fadeIn  { to { opacity: 1; } }
-    #loader.done { animation: loaderOut .9s cubic-bezier(.7,0,1,1) forwards; }
-    @keyframes loaderOut { to { transform: translateY(-100%); } }
+    @keyframes fillBar { to { transform: scaleX(1); } }
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+    #loader.done { animation: slideUp .9s cubic-bezier(.7,0,1,1) forwards; }
+    @keyframes slideUp { to { transform: translateY(-100%); } }
 
     /* ── NAV ── */
     nav {
       position: fixed; inset: 0 0 auto 0; z-index: 1000;
-      padding: 32px 80px;
+      padding: 28px 72px;
       display: flex; align-items: center; justify-content: space-between;
-      background: linear-gradient(to bottom, rgba(250,247,242,.95) 0%, transparent 100%);
+      background: linear-gradient(to bottom, rgba(250,247,242,.97) 0%, transparent 100%);
       transition: all .5s ease;
     }
     nav.scrolled {
-      padding: 18px 80px;
+      padding: 16px 72px;
       background: rgba(250,247,242,.97);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(154,123,63,.12);
-      box-shadow: 0 2px 32px rgba(26,20,16,.05);
+      box-shadow: 0 2px 24px rgba(26,20,16,.05);
     }
     .nav-logo {
       font-family: 'Cormorant Garamond', serif;
       font-size: 15px; letter-spacing: 6px; text-transform: uppercase;
-      color: var(--ink); text-decoration: none;
+      color: var(--ink); text-decoration: none; white-space: nowrap;
     }
     .nav-logo em { color: var(--gold); font-style: normal; }
-    .nav-links { display: flex; gap: 48px; list-style: none; }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
     .nav-links a {
-      font-size: 9px; letter-spacing: 3.5px; text-transform: uppercase; font-weight: 400;
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
       color: var(--muted); text-decoration: none; transition: color .3s;
       position: relative;
     }
     .nav-links a::after {
-      content:''; position:absolute; bottom:-4px; left:0; width:0; height:1px;
-      background:var(--gold); transition:width .35s;
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--gold); transition: width .35s;
     }
     .nav-links a:hover { color: var(--ink); }
-    .nav-links a:hover::after { width:100%; }
+    .nav-links a:hover::after { width: 100%; }
     .nav-cta {
       font-size: 9px; letter-spacing: 3px; text-transform: uppercase; font-weight: 500;
-      color: var(--white); background: var(--ink); padding: 13px 32px;
-      border: none; cursor: none; font-family: 'Montserrat', sans-serif;
-      transition: all .35s; position: relative; overflow: hidden;
+      color: var(--white); background: var(--ink); padding: 12px 28px;
+      border: none; cursor: pointer; font-family: 'Montserrat', sans-serif;
+      transition: background .35s; white-space: nowrap;
     }
-    .nav-cta::before {
-      content:''; position:absolute; inset:0; background:var(--gold);
-      transform:translateX(-101%); transition:transform .35s cubic-bezier(.4,0,.2,1);
-    }
-    .nav-cta span { position:relative; z-index:1; }
-    .nav-cta:hover::before { transform:translateX(0); }
+    .nav-cta:hover { background: var(--gold); }
 
-    /* ═══════════════════════════════════════
-       KEN BURNS / LIVING IMAGE SYSTEM
-    ═══════════════════════════════════════ */
-    .live-img {
-      position: relative; overflow: hidden; display: block;
+    /* hamburger */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
     }
-    .live-img img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-      transform-origin: center center;
-      will-change: transform, filter;
+    .nav-hamburger span {
+      display: block; width: 24px; height: 1px; background: var(--ink);
+      transition: all .3s;
     }
-    /* Variant A – slow zoom in */
-    .kb-zoom-in img  { animation: kbZoomIn 18s ease-in-out infinite alternate; }
-    /* Variant B – slow zoom out */
-    .kb-zoom-out img { animation: kbZoomOut 20s ease-in-out infinite alternate; }
-    /* Variant C – pan left */
-    .kb-pan-left img { animation: kbPanLeft 22s ease-in-out infinite alternate; }
-    /* Variant D – pan right + zoom */
-    .kb-pan-right img { animation: kbPanRight 20s ease-in-out infinite alternate; }
-    /* Variant E – diagonal drift */
-    .kb-drift img    { animation: kbDrift 24s ease-in-out infinite alternate; }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-    @keyframes kbZoomIn {
-      from { transform: scale(1.0) translate(0,0);   filter: brightness(1); }
-      to   { transform: scale(1.15) translate(-1%,-1%); filter: brightness(1.04); }
+    .nav-drawer {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: var(--cream); padding: 100px 40px 60px;
+      flex-direction: column; gap: 32px;
+      transform: translateX(100%); transition: transform .4s cubic-bezier(.4,0,.2,1);
     }
-    @keyframes kbZoomOut {
-      from { transform: scale(1.18) translate(1%,1%); filter: brightness(1.02); }
-      to   { transform: scale(1.0)  translate(0,0);   filter: brightness(1); }
+    .nav-drawer.open { transform: translateX(0); }
+    .nav-drawer a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px; font-weight: 300; color: var(--ink);
+      text-decoration: none; letter-spacing: 2px;
+      border-bottom: 1px solid rgba(154,123,63,.2); padding-bottom: 20px;
     }
-    @keyframes kbPanLeft {
-      from { transform: scale(1.12) translate(3%,0);  filter: brightness(1); }
-      to   { transform: scale(1.12) translate(-3%,0); filter: brightness(1.03); }
-    }
-    @keyframes kbPanRight {
-      from { transform: scale(1.08) translate(-2%,1%); filter: brightness(1); }
-      to   { transform: scale(1.14) translate(2%,-1%); filter: brightness(1.04); }
-    }
-    @keyframes kbDrift {
-      from { transform: scale(1.1) translate(-2%,-1%); filter: brightness(.98); }
-      to   { transform: scale(1.18) translate(2%, 1%); filter: brightness(1.05); }
+    .nav-drawer a:last-child { border-bottom: none; }
+    .nav-drawer .drawer-cta {
+      display: block; text-align: center; padding: 16px;
+      background: var(--ink); color: var(--white);
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif; margin-top: 8px;
     }
 
     /* ── HERO ── */
     .hero {
-      height: 100vh; position: relative; overflow: hidden;
+      height: 100vh; min-height: 600px; position: relative; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
     }
-    .hero-media {
-      position: absolute; inset: 0;
-    }
-    .hero-media img {
-      width: 100%; height: 100%; object-fit: cover;
-      transform-origin: center center;
-      animation: heroKB 24s ease-in-out infinite alternate;
-      filter: brightness(.85) saturate(1.1);
-    }
-    @keyframes heroKB {
-      0%   { transform: scale(1.0)  translate(0,0);     }
-      33%  { transform: scale(1.08) translate(-1%,-0.5%);}
-      66%  { transform: scale(1.12) translate(1%,0.5%); }
-      100% { transform: scale(1.06) translate(0.5%,-1%);}
+    .hero img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
     }
     .hero-overlay {
       position: absolute; inset: 0;
       background:
-        linear-gradient(to right, rgba(250,247,242,.15) 0%, transparent 50%),
-        linear-gradient(to top, rgba(250,247,242,.9) 0%, rgba(250,247,242,.1) 35%, transparent 60%);
+        linear-gradient(to top, rgba(250,247,242,.88) 0%, rgba(250,247,242,.1) 40%, transparent 65%),
+        linear-gradient(to right, rgba(250,247,242,.12) 0%, transparent 60%);
     }
     .hero-content {
       position: relative; z-index: 2; text-align: center; padding: 0 24px;
+      max-width: 900px;
     }
     .hero-tag {
       display: flex; align-items: center; justify-content: center; gap: 16px;
       margin-bottom: 28px;
-      opacity:0; animation: slideUp 1s ease 1.8s forwards;
+      opacity: 0; animation: fadeUp 1s ease 1.8s forwards;
     }
-    .hero-tag-line { width: 56px; height: 1px; background: var(--gold); }
+    .hero-tag-line { width: 48px; height: 1px; background: var(--gold); flex-shrink: 0; }
     .hero-tag span {
-      font-size: 9px; letter-spacing: 6px; text-transform: uppercase;
-      color: var(--gold); font-weight: 400;
+      font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold);
     }
     .hero-h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(64px, 9vw, 120px);
-      font-weight: 300; line-height: .92; letter-spacing: -1px;
-      color: var(--ink);
-      opacity:0; animation: slideUp 1.2s cubic-bezier(.16,1,.3,1) 2s forwards;
+      font-size: clamp(52px, 8.5vw, 120px);
+      font-weight: 300; line-height: .92; letter-spacing: -1px; color: var(--ink);
+      opacity: 0; animation: fadeUp 1.2s cubic-bezier(.16,1,.3,1) 2s forwards;
     }
     .hero-h1 em { font-style: italic; color: var(--gold); }
     .hero-sub {
-      margin-top: 24px;
-      font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
-      color: var(--muted); font-weight: 300;
-      opacity:0; animation: slideUp 1s ease 2.3s forwards;
+      margin-top: 20px; font-size: 10px; letter-spacing: 5px;
+      text-transform: uppercase; color: var(--muted);
+      opacity: 0; animation: fadeUp 1s ease 2.25s forwards;
     }
     .hero-rule {
-      display: flex; align-items: center; justify-content: center; gap: 16px;
-      margin: 44px auto;
-      opacity:0; animation: slideUp .8s ease 2.5s forwards;
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      margin: 40px auto;
+      opacity: 0; animation: fadeUp .8s ease 2.45s forwards;
     }
-    .hero-rule-line { width: 80px; height: 1px; background: rgba(154,123,63,.35); }
-    .hero-rule-gem  { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); }
+    .hero-rule-line { width: 72px; height: 1px; background: rgba(154,123,63,.3); }
+    .hero-rule-gem  { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
     .hero-stats {
-      display: flex; gap: 72px; justify-content: center; margin-bottom: 52px;
-      opacity:0; animation: slideUp 1s ease 2.6s forwards;
+      display: flex; gap: 56px; justify-content: center; margin-bottom: 48px;
+      flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 1s ease 2.6s forwards;
     }
     .h-stat-num {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 44px; font-weight: 300; color: var(--ink); line-height: 1;
+      font-size: 40px; font-weight: 300; color: var(--ink); line-height: 1;
     }
     .h-stat-num span { color: var(--gold); }
-    .h-stat-label { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+    .h-stat-label { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
     .hero-btns {
-      display: flex; gap: 16px; justify-content: center;
-      opacity:0; animation: slideUp 1s ease 2.8s forwards;
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 1s ease 2.8s forwards;
     }
-    .btn-dark {
-      padding: 17px 52px; background: var(--ink); color: var(--white);
+    .btn-ink {
+      padding: 16px 48px; background: var(--ink); color: var(--white);
       font-size: 9px; letter-spacing: 3.5px; text-transform: uppercase;
       font-family: 'Montserrat', sans-serif; font-weight: 500;
-      border: none; cursor: none; text-decoration: none; display: inline-block;
-      transition: all .4s; position: relative; overflow: hidden;
+      border: none; cursor: pointer; text-decoration: none; display: inline-block;
+      transition: background .35s;
     }
-    .btn-dark::before {
-      content:''; position:absolute; inset:0; background:var(--gold);
-      transform:translateX(-101%); transition:transform .4s cubic-bezier(.4,0,.2,1);
-    }
-    .btn-dark:hover::before { transform:translateX(0); }
-    .btn-dark span { position:relative; z-index:1; }
-    .btn-outline-dark {
-      padding: 17px 52px; background: transparent;
-      border: 1px solid rgba(26,20,16,.3);
+    .btn-ink:hover { background: var(--gold); }
+    .btn-outline {
+      padding: 16px 48px; background: transparent;
+      border: 1px solid rgba(26,20,16,.25);
       font-size: 9px; letter-spacing: 3.5px; text-transform: uppercase;
       font-family: 'Montserrat', sans-serif; font-weight: 400;
-      color: var(--ink); cursor: none; text-decoration: none; display: inline-block;
-      transition: all .4s;
+      color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block;
+      transition: all .35s;
     }
-    .btn-outline-dark:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
     .scroll-hint {
-      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center; gap: 10px;
-      opacity:0; animation: fadeIn 1s ease 3.2s forwards;
+      opacity: 0; animation: fadeUp 1s ease 3.1s forwards;
     }
-    .scroll-hint span { font-size: 7px; letter-spacing: 4px; text-transform: uppercase; color: rgba(154,123,63,.8); }
+    .scroll-hint span { font-size: 7px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); }
     .scroll-mouse {
-      width: 22px; height: 34px; border: 1px solid rgba(154,123,63,.5); border-radius: 12px;
+      width: 20px; height: 32px; border: 1px solid rgba(154,123,63,.45); border-radius: 12px;
       position: relative;
     }
     .scroll-mouse::before {
-      content:''; position:absolute; width:2px; height:6px;
-      background: var(--gold); border-radius:2px; top:6px; left:50%;
-      transform:translateX(-50%);
-      animation: dot 2s ease infinite;
+      content: ''; position: absolute; width: 2px; height: 5px;
+      background: var(--gold); border-radius: 2px; top: 5px; left: 50%;
+      transform: translateX(-50%);
+      animation: scrollDot 2s ease infinite;
     }
-    @keyframes dot {
-      0%,100% { transform:translateX(-50%) translateY(0); opacity:1; }
-      80%      { transform:translateX(-50%) translateY(12px); opacity:0; }
-    }
-    @keyframes slideUp {
-      from { opacity:0; transform:translateY(40px); }
-      to   { opacity:1; transform:translateY(0); }
+    @keyframes scrollDot {
+      0%,100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+      80%      { transform: translateX(-50%) translateY(11px); opacity: 0; }
     }
 
-    /* ── GOLD TICKER ── */
-    .ticker {
-      background: var(--ink); padding: 18px 0; overflow: hidden;
-    }
+    /* ── TICKER ── */
+    .ticker { background: var(--ink); padding: 16px 0; overflow: hidden; }
     .ticker-track {
       display: flex; width: max-content;
-      animation: tick 30s linear infinite;
+      animation: tickMove 32s linear infinite;
     }
-    @keyframes tick { to { transform: translateX(-50%); } }
+    @keyframes tickMove { to { transform: translateX(-50%); } }
     .ti {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 14px; letter-spacing: 4px; font-weight: 400;
-      color: var(--gold-pale); padding: 0 48px; white-space: nowrap;
-      display: flex; align-items: center; gap: 48px;
+      font-size: 13px; letter-spacing: 4px; color: var(--gold-pale);
+      padding: 0 44px; white-space: nowrap;
+      display: flex; align-items: center; gap: 44px;
     }
-    .ti::after { content:'✦'; font-size:8px; color: var(--gold-light); }
+    .ti::after { content: '◆'; font-size: 6px; color: var(--gold-l); }
 
-    /* ── SECTION HELPERS ── */
+    /* ── SHARED ── */
     .tag {
-      font-size: 8px; letter-spacing: 6px; text-transform: uppercase;
-      color: var(--gold); font-weight: 400;
-      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+      font-size: 8px; letter-spacing: 6px; text-transform: uppercase; color: var(--gold);
+      display: flex; align-items: center; gap: 12px; margin-bottom: 22px;
     }
-    .tag::before { content:''; width:28px; height:1px; background:var(--gold); }
+    .tag::before { content: ''; width: 28px; height: 1px; background: var(--gold); flex-shrink: 0; }
     .sh {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(38px,4.5vw,68px); font-weight: 300; line-height: 1.08;
-      color: var(--ink);
+      font-size: clamp(34px, 4vw, 64px); font-weight: 300; line-height: 1.08;
     }
     .sh em { font-style: italic; color: var(--gold); }
-    .rule { width: 44px; height: 1px; background: var(--gold); margin: 28px 0; }
-    .body { font-size: 13px; line-height: 2; color: var(--muted); }
+    .rule { width: 44px; height: 1px; background: var(--gold); margin: 24px 0; }
+    .body-p { font-size: 13px; line-height: 2; color: var(--muted); }
 
     /* ── OVERVIEW ── */
-    .overview {
-      padding: 160px 120px;
-      display: grid; grid-template-columns: 1fr 1.15fr; gap: 120px; align-items: center;
-      background: var(--cream);
+    .overview { padding: 120px 80px; background: var(--cream); }
+    .overview-inner {
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 100px; align-items: center;
     }
     .ov-visual { position: relative; }
-    .ov-main.live-img { height: 620px; }
-    .ov-accent.live-img {
-      position: absolute; bottom: -48px; right: -48px;
-      width: 54%; height: 240px;
-      border: 6px solid var(--cream);
+    .ov-main { width: 100%; height: 580px; object-fit: cover; display: block; }
+    .ov-accent {
+      position: absolute; bottom: -40px; right: -40px;
+      width: 52%; height: 220px; object-fit: cover;
+      border: 5px solid var(--cream);
     }
     .ov-badge {
-      position: absolute; top: -20px; left: -20px;
-      width: 100px; height: 100px; background: var(--gold);
+      position: absolute; top: -16px; left: -16px;
+      width: 92px; height: 92px; background: var(--gold);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 4;
     }
     .ov-badge strong {
-      font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300;
+      font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300;
       color: var(--white); line-height: 1;
     }
     .ov-badge small {
       font-size: 7px; letter-spacing: 2px; text-transform: uppercase;
-      color: rgba(255,255,255,.7); margin-top: 2px;
+      color: rgba(255,255,255,.75); margin-top: 2px;
     }
-    .ov-text { padding-bottom: 48px; }
-    .ov-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 40px; }
+    .ov-text {}
+    .ov-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
     .pill {
-      padding: 9px 22px; border: 1px solid rgba(154,123,63,.35);
+      padding: 9px 20px; border: 1px solid rgba(154,123,63,.3);
       font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
     }
     .ov-nums {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 48px;
-      padding-top: 40px; border-top: 1px solid rgba(26,20,16,.08);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 44px;
+      padding-top: 36px; border-top: 1px solid rgba(26,20,16,.08);
     }
     .ov-num-val {
-      font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; color: var(--gold);
+      font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 300; color: var(--gold);
     }
-    .ov-num-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+    .ov-num-lbl { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
 
     /* ── GALLERY ── */
     .gallery-section { background: var(--ivory); }
     .gallery-head {
-      padding: 100px 120px 60px;
-      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 90px 80px 56px;
+      display: flex; justify-content: space-between; align-items: flex-end; gap: 32px;
     }
     .gallery-mosaic {
       display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr;
-      grid-template-rows: 400px 400px;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      grid-template-rows: 380px 380px;
       gap: 4px;
     }
-    .gm { overflow: hidden; position: relative; cursor: none; }
-    .gm.tall { grid-column:1; grid-row:1/3; }
-    .gm.live-img { height: 100%; }
-    /* override heights inside grid */
-    .gallery-mosaic .gm img {
-      animation-duration: 20s;
+    .gm { overflow: hidden; position: relative; }
+    .gm.tall { grid-column: 1; grid-row: 1 / 3; }
+    .gm img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 1s cubic-bezier(.25,.46,.45,.94);
     }
+    .gm:hover img { transform: scale(1.04); }
     .gm-info {
-      position: absolute; inset:0; padding: 32px;
+      position: absolute; inset: 0; padding: 28px;
       display: flex; flex-direction: column; justify-content: flex-end;
       background: linear-gradient(to top, rgba(26,20,16,.55) 0%, transparent 55%);
-      opacity:0; transition: opacity .5s;
+      opacity: 0; transition: opacity .5s;
     }
     .gm:hover .gm-info { opacity: 1; }
-    .gm-label {
-      font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
-      color: var(--gold-pale);
-      transform: translateY(8px); transition: transform .4s .1s;
-    }
-    .gm-title {
-      font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300;
-      color: var(--white); margin-top: 4px;
-      transform: translateY(8px); transition: transform .4s .15s;
-    }
-    .gm:hover .gm-label,
-    .gm:hover .gm-title { transform: translateY(0); }
+    .gm-label { font-size: 8px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold-pale); transform: translateY(8px); transition: transform .4s .05s; }
+    .gm-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--white); margin-top: 4px; transform: translateY(8px); transition: transform .4s .1s; }
+    .gm:hover .gm-label, .gm:hover .gm-title { transform: translateY(0); }
 
     /* ── AMENITIES ── */
-    .amenities-section { background: var(--white); padding: 160px 120px; }
-    .am-head { text-align: center; margin-bottom: 90px; }
+    .amenities-section { background: var(--white); padding: 120px 80px; }
+    .am-head { text-align: center; margin-bottom: 80px; }
     .am-head .tag { justify-content: center; }
-    .am-head .tag::before { display:none; }
-    .am-head .tag::after { content:''; width:28px; height:1px; background:var(--gold); }
+    .am-head .tag::before { display: none; }
+    .am-head .tag::after  { content: ''; width: 28px; height: 1px; background: var(--gold); flex-shrink: 0; }
 
-    /* 3 featured image-backed cards */
-    .am-features {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; margin-bottom: 4px;
+    /* 3 image-backed cards */
+    .am-features { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; margin-bottom: 4px; }
+    .am-feat { position: relative; height: 420px; overflow: hidden; }
+    .am-feat img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: brightness(.72);
+      transition: transform 1s ease, filter .6s;
     }
-    .am-feat {
-      position: relative; height: 440px; overflow: hidden; cursor: none;
-    }
-    .am-feat.live-img img {
-      filter: brightness(.75) saturate(1.05);
-      transition: filter .6s;
-    }
-    .am-feat:hover img { filter: brightness(.5) saturate(1.1); }
+    .am-feat:hover img { transform: scale(1.04); filter: brightness(.5); }
     .am-feat-body {
-      position: absolute; inset:0; padding: 44px;
+      position: absolute; inset: 0; padding: 40px;
       display: flex; flex-direction: column; justify-content: flex-end;
-      background: linear-gradient(to top, rgba(26,20,16,.8) 0%, transparent 55%);
+      background: linear-gradient(to top, rgba(26,20,16,.75) 0%, transparent 55%);
     }
-    .am-icon { font-size: 30px; margin-bottom: 14px; transition: transform .5s; }
-    .am-feat:hover .am-icon { transform: translateY(-8px); }
-    .am-ftitle {
-      font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300;
-      color: var(--white);
-    }
+    /* SVG icon inside amenity cards */
+    .am-icon { width: 32px; height: 32px; margin-bottom: 14px; transition: transform .5s; }
+    .am-feat:hover .am-icon { transform: translateY(-6px); }
+    .am-ftitle { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: var(--white); }
     .am-fsub {
-      font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,.6);
-      margin-top: 6px; opacity:0; transform:translateY(12px);
-      transition: opacity .4s .1s, transform .4s .1s;
+      font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,.55); margin-top: 6px;
+      opacity: 0; transform: translateY(10px); transition: opacity .4s .1s, transform .4s .1s;
     }
-    .am-feat:hover .am-fsub { opacity:1; transform:translateY(0); }
-    .am-fline {
-      width:0; height:1px; background:var(--gold-light); margin-top:16px;
-      transition: width .4s .1s;
-    }
-    .am-feat:hover .am-fline { width: 48px; }
+    .am-feat:hover .am-fsub { opacity: 1; transform: translateY(0); }
+    .am-fline { width: 0; height: 1px; background: var(--gold-l); margin-top: 14px; transition: width .4s .1s; }
+    .am-feat:hover .am-fline { width: 44px; }
 
     /* mini grid */
-    .am-grid {
-      display: grid; grid-template-columns: repeat(6,1fr); gap: 4px;
-    }
+    .am-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 4px; }
     .am-mini {
-      background: var(--cream); padding: 36px 20px; text-align: center;
-      transition: all .4s; cursor: none; position: relative; overflow: hidden;
-      border: 1px solid transparent;
+      background: var(--cream); padding: 32px 16px; text-align: center;
+      transition: all .4s; border-bottom: 2px solid transparent; position: relative;
     }
-    .am-mini::after {
-      content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
-      background: var(--gold); transform:scaleX(0); transition:transform .4s;
-    }
-    .am-mini:hover { background: var(--ivory); border-color: rgba(154,123,63,.15); transform:translateY(-4px); }
-    .am-mini:hover::after { transform:scaleX(1); }
-    .am-mini-icon { font-size: 22px; display:block; margin-bottom:14px; }
-    .am-mini-name { font-size: 9px; letter-spacing: 2px; text-transform:uppercase; color:var(--muted); line-height:1.6; }
+    .am-mini:hover { background: var(--ivory); border-bottom-color: var(--gold); transform: translateY(-3px); }
+    .am-mini svg { width: 28px; height: 28px; display: block; margin: 0 auto 14px; stroke: var(--gold); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .am-mini-name { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); line-height: 1.6; }
 
-    /* ── PARALLAX BANNER ── */
-    .parallax-banner {
-      height: 70vh; position: relative; overflow: hidden;
+    /* ── QUOTE BANNER ── */
+    .quote-banner {
+      height: 65vh; min-height: 420px; position: relative; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
     }
-    .pb-bg {
-      position: absolute; inset: -20%;
+    .qb-img {
+      position: absolute; inset: -8%;
       will-change: transform;
     }
-    .pb-bg img {
-      width:100%; height:100%; object-fit:cover;
-      animation: kbZoomIn 22s ease-in-out infinite alternate;
-      filter: brightness(.45) saturate(1.15);
-    }
-    .pb-content { position: relative; z-index:2; text-align:center; padding: 0 120px; }
-    .pb-rule {
-      display: flex; align-items: center; justify-content: center; gap: 20px;
-      margin-bottom: 40px;
-    }
-    .pb-rule-line { width:80px; height:1px; background: rgba(255,255,255,.3); }
-    .pb-rule-gem  { color: var(--gold-light); font-size:14px; }
-    .pb-quote {
+    .qb-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.38) saturate(1.1); }
+    .qb-content { position: relative; z-index: 2; text-align: center; padding: 0 80px; max-width: 900px; }
+    .qb-rule { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 36px; }
+    .qb-rule-line { width: 72px; height: 1px; background: rgba(255,255,255,.25); }
+    .qb-rule-gem  { width: 6px; height: 6px; background: var(--gold-l); transform: rotate(45deg); flex-shrink: 0; }
+    .qb-quote {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(26px,4vw,52px); font-weight:300; font-style:italic;
-      line-height: 1.45; color: var(--white); max-width: 900px; margin:0 auto;
+      font-size: clamp(22px, 3.5vw, 46px); font-weight: 300; font-style: italic;
+      line-height: 1.45; color: var(--white);
     }
-    .pb-quote em { color: var(--gold-light); font-style:normal; }
-    .pb-attr {
-      margin-top: 36px;
-      font-size: 9px; letter-spacing: 5px; text-transform:uppercase; color: var(--gold-light);
-    }
+    .qb-quote em { color: var(--gold-pale); font-style: normal; }
+    .qb-attr { margin-top: 32px; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold-l); }
 
     /* ── CONCIERGE ── */
-    .concierge-section {
-      padding: 160px 120px; background: var(--cream);
-      display: grid; grid-template-columns: 1fr 1fr; gap: 120px; align-items: center;
-    }
+    .concierge-section { padding: 120px 80px; background: var(--cream); }
+    .concierge-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
     .con-visual { position: relative; }
-    .con-img.live-img { height: 640px; }
+    .con-img { width: 100%; height: 600px; object-fit: cover; display: block; }
     .con-stat {
-      position: absolute; top: 48px; right: -48px;
-      background: var(--ink); padding: 36px; width: 190px;
-      border-left: 2px solid var(--gold); z-index: 4;
+      position: absolute; top: 40px; right: -40px;
+      background: var(--ink); padding: 32px; width: 176px; z-index: 4;
+      border-left: 2px solid var(--gold);
     }
-    .con-stat-val {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 48px; font-weight: 300; color: var(--gold-light); line-height:1;
-    }
-    .con-stat-label {
-      font-size: 8px; letter-spacing: 3px; text-transform:uppercase;
-      color: rgba(255,255,255,.45); margin-top: 8px; line-height: 1.7;
-    }
-    .svcs { margin-top:44px; display:flex; flex-direction:column; gap:3px; }
+    .con-stat-val { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; color: var(--gold-l); line-height: 1; }
+    .con-stat-lbl { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-top: 8px; line-height: 1.7; }
+    .svcs { margin-top: 40px; display: flex; flex-direction: column; gap: 3px; }
     .svc {
-      display:flex; align-items:center; gap:20px; padding:20px 24px;
-      background: var(--ivory); transition:all .4s; cursor:none; position:relative; overflow:hidden;
+      display: flex; align-items: center; gap: 18px; padding: 18px 22px;
+      background: var(--ivory); transition: all .4s; position: relative; overflow: hidden;
       border-left: 3px solid transparent;
     }
-    .svc:hover { background: var(--ivory2); border-left-color: var(--gold); padding-left:32px; }
-    .svc-icon { font-size:18px; flex-shrink:0; }
-    .svc-text { font-size:12px; color: var(--muted); letter-spacing:.3px; }
-    .svc-arr {
-      margin-left:auto; color:var(--gold); font-size:12px;
-      opacity:0; transform:translateX(-8px); transition:all .3s;
-    }
-    .svc:hover .svc-arr { opacity:1; transform:translateX(0); }
+    .svc:hover { background: var(--ivory2); border-left-color: var(--gold); padding-left: 30px; }
+    .svc svg { width: 18px; height: 18px; flex-shrink: 0; stroke: var(--gold); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .svc-text { font-size: 12px; color: var(--muted); }
+    .svc-arr { margin-left: auto; color: var(--gold); font-size: 14px; opacity: 0; transform: translateX(-8px); transition: all .3s; font-style: normal; }
+    .svc:hover .svc-arr { opacity: 1; transform: translateX(0); }
 
     /* ── LOCATION ── */
     .location-section { background: var(--ivory); }
     .loc-top { display: grid; grid-template-columns: 1fr 1fr; }
-    .loc-map.live-img { min-height: 620px; }
-    .loc-info { padding: 100px 80px; background: var(--ivory); }
-    .loc-cards {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: 44px;
-    }
-    .lc {
-      background: var(--white); padding: 28px; transition:background .3s; cursor:none;
-    }
+    .loc-map { overflow: hidden; }
+    .loc-map img { width: 100%; height: 100%; min-height: 560px; object-fit: cover; display: block; transition: transform 1s ease; }
+    .loc-map:hover img { transform: scale(1.03); }
+    .loc-info { padding: 80px 64px; }
+    .loc-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: 40px; }
+    .lc { background: var(--white); padding: 24px; transition: background .3s; }
     .lc:hover { background: var(--cream); }
-    .lc-time {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 34px; font-weight: 300; color: var(--gold); line-height:1;
-    }
-    .lc-name { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-top:6px; }
-    .lc-sub  { font-size:11px; color:rgba(26,20,16,.3); margin-top:2px; }
-    .loc-strip {
-      display: grid; grid-template-columns: repeat(4,1fr);
-      border-top: 1px solid rgba(26,20,16,.07);
-      background: var(--ivory);
-    }
-    .ls {
-      padding:40px; text-align:center;
-      border-right: 1px solid rgba(26,20,16,.07);
-    }
-    .ls:last-child { border-right:none; }
-    .ls-val {
-      font-family: 'Cormorant Garamond', serif; font-size:34px; font-weight:300; color:var(--gold);
-    }
-    .ls-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-top:6px; }
+    .lc-time { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--gold); line-height: 1; }
+    .lc-name { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
+    .lc-sub  { font-size: 11px; color: var(--muted2); margin-top: 2px; }
+    .loc-strip { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid rgba(26,20,16,.07); }
+    .ls { padding: 36px; text-align: center; border-right: 1px solid rgba(26,20,16,.07); }
+    .ls:last-child { border-right: none; }
+    .ls-val { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--gold); }
+    .ls-lbl { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
 
     /* ── PRICING ── */
-    .pricing-section { padding: 160px 120px; background: var(--cream); text-align:center; }
-    .price-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-top:80px; }
+    .pricing-section { padding: 120px 80px; background: var(--cream); text-align: center; }
+    .price-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; margin-top: 72px; }
     .pc {
-      background: var(--white); padding: 68px 48px;
-      position:relative; transition: transform .5s cubic-bezier(.25,.46,.45,.94);
-      cursor:none; border: 1px solid transparent;
+      background: var(--white); padding: 60px 44px;
+      position: relative; transition: transform .5s cubic-bezier(.25,.46,.45,.94);
+      border: 1px solid transparent;
     }
-    .pc:hover { transform:translateY(-12px); border-color: rgba(154,123,63,.2); }
+    .pc:hover { transform: translateY(-10px); border-color: rgba(154,123,63,.18); }
     .pc.feat { background: var(--ink); border-top: 2px solid var(--gold); }
     .pc-badge {
-      position:absolute; top:-13px; left:50%; transform:translateX(-50%);
-      background:var(--gold); color:var(--white);
-      font-size:8px; letter-spacing:3px; text-transform:uppercase; font-weight:600; padding:6px 22px;
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--gold); color: var(--white);
+      font-size: 8px; letter-spacing: 3px; text-transform: uppercase; font-weight: 600; padding: 5px 20px;
     }
-    .pc-type {
-      font-family:'Cormorant Garamond',serif; font-size:34px; font-weight:300; color:var(--gold);
-      margin-bottom:20px;
-    }
-    .pc.feat .pc-type { color: var(--gold-light); }
-    .pc-amt {
-      font-family:'Cormorant Garamond',serif; font-size:52px; font-weight:300; color:var(--ink);
-    }
+    .pc-type { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--gold); margin-bottom: 18px; }
+    .pc-amt  { font-family: 'Cormorant Garamond', serif; font-size: 50px; font-weight: 300; color: var(--ink); }
     .pc.feat .pc-amt { color: var(--white); }
-    .pc-onward { font-size:10px; letter-spacing:3px; color:var(--muted); margin-top:6px; }
-    .pc.feat .pc-onward { color: rgba(255,255,255,.4); }
-    .pc-rule { width:32px; height:1px; background:var(--gold); margin:28px auto; }
-    .pc-list { list-style:none; text-align:left; }
+    .pc-onward { font-size: 10px; letter-spacing: 3px; color: var(--muted); margin-top: 6px; }
+    .pc.feat .pc-onward { color: rgba(255,255,255,.35); }
+    .pc-rule { width: 32px; height: 1px; background: var(--gold); margin: 24px auto; }
+    .pc-list { list-style: none; text-align: left; }
     .pc-list li {
-      font-size:12px; color:var(--muted); padding:10px 0;
+      font-size: 12px; color: var(--muted); padding: 10px 0;
       border-bottom: 1px solid rgba(26,20,16,.06);
-      display:flex; align-items:center; gap:12px;
+      display: flex; align-items: center; gap: 10px;
     }
-    .pc.feat .pc-list li { color:rgba(255,255,255,.5); border-bottom-color:rgba(255,255,255,.08); }
-    .pc-list li::before { content:'◆'; color:var(--gold); font-size:5px; flex-shrink:0; }
+    .pc.feat .pc-list li { color: rgba(255,255,255,.45); border-bottom-color: rgba(255,255,255,.07); }
+    .pc-list li::before { content: '◆'; color: var(--gold); font-size: 5px; flex-shrink: 0; }
     .pc-btn {
-      display:block; margin-top:36px; padding:15px; text-align:center;
-      font-size:9px; letter-spacing:3px; text-transform:uppercase;
-      font-family:'Montserrat',sans-serif; font-weight:500; text-decoration:none; transition:all .4s;
+      display: block; margin-top: 32px; padding: 14px; text-align: center;
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif; font-weight: 500; text-decoration: none; transition: all .35s;
     }
-    .pc-btn.dark  { background:var(--ink); color:var(--white); }
-    .pc-btn.dark:hover  { background:var(--gold); }
-    .pc-btn.gold  { background:var(--gold); color:var(--white); }
-    .pc-btn.gold:hover  { background:var(--gold-light); }
-    .pc-btn.line  { border:1px solid rgba(154,123,63,.4); color:var(--gold); }
-    .pc-btn.line:hover  { background:var(--gold-dim); }
+    .pc-btn.dark { background: var(--ink); color: var(--white); }
+    .pc-btn.dark:hover { background: var(--gold); }
+    .pc-btn.gold { background: var(--gold); color: var(--white); }
+    .pc-btn.gold:hover { background: var(--gold-l); }
+    .pc-btn.line { border: 1px solid rgba(154,123,63,.35); color: var(--gold); }
+    .pc-btn.line:hover { background: var(--gold-dim); }
 
     /* ── CONTACT ── */
-    .contact-section { display:grid; grid-template-columns:1fr 1fr; background:var(--ivory); }
-    .con-vis { position:relative; min-height:700px; overflow:hidden; }
-    .con-vis.live-img { min-height:700px; }
+    .contact-section { display: grid; grid-template-columns: 1fr 1fr; background: var(--ivory); }
+    .con-vis { position: relative; min-height: 680px; overflow: hidden; }
+    .con-vis img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .con-vis-overlay {
-      position:absolute; inset:0;
-      background:
-        linear-gradient(to right, transparent 50%, var(--ivory) 100%),
-        linear-gradient(to top, rgba(26,20,16,.5) 0%, transparent 60%);
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 55%, var(--ivory) 100%),
+                  linear-gradient(to top, rgba(26,20,16,.45) 0%, transparent 60%);
     }
-    .con-vis-text {
-      position:absolute; bottom:60px; left:60px; right:60px;
-    }
+    .con-vis-text { position: absolute; bottom: 56px; left: 52px; right: 52px; }
     .con-vis-text h3 {
-      font-family:'Cormorant Garamond',serif; font-size:48px; font-weight:300; line-height:1.1;
-      color: var(--white);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px; font-weight: 300; line-height: 1.1; color: var(--white);
     }
-    .con-vis-text h3 em { font-style:italic; color:var(--gold-light); }
-    .con-form-wrap { padding: 100px 80px; background: var(--ivory); }
-    .cdets { display:flex; flex-direction:column; gap:24px; margin-bottom:52px; }
-    .cd-row { display:flex; align-items:center; gap:18px; }
+    .con-vis-text h3 em { font-style: italic; color: var(--gold-pale); }
+    .con-form-wrap { padding: 80px 64px; }
+    .cdets { display: flex; flex-direction: column; gap: 22px; margin-bottom: 48px; }
+    .cd-row { display: flex; align-items: center; gap: 16px; }
     .cd-icon {
-      width:44px; height:44px; flex-shrink:0;
-      border:1px solid rgba(154,123,63,.25);
-      display:flex; align-items:center; justify-content:center;
-      font-size:16px; color:var(--gold); background:var(--white);
+      width: 42px; height: 42px; flex-shrink: 0;
+      border: 1px solid rgba(154,123,63,.22);
+      display: flex; align-items: center; justify-content: center; background: var(--white);
     }
-    .cd-label { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:2px; }
-    .cd-val { font-size:13px; color:var(--muted); }
-    .cf-title {
-      font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:300;
-      margin-bottom:32px; color:var(--ink);
+    .cd-icon svg { width: 18px; height: 18px; stroke: var(--gold); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .cd-label { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
+    .cd-val { font-size: 12px; color: var(--muted); }
+    .cf-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; margin-bottom: 28px; color: var(--ink); }
+    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 3px; }
+    .cf-grp { margin-bottom: 3px; }
+    .cf-grp input, .cf-grp select, .cf-grp textarea {
+      width: 100%; background: var(--white); border: none;
+      border-bottom: 1px solid rgba(26,20,16,.1);
+      color: var(--ink); padding: 16px 0;
+      font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 300;
+      outline: none; transition: border-color .35s;
     }
-    .cf-row { display:grid; grid-template-columns:1fr 1fr; gap:3px; margin-bottom:3px; }
-    .cf-grp { margin-bottom:3px; }
-    .cf-grp input,
-    .cf-grp select,
-    .cf-grp textarea {
-      width:100%; background:var(--white); border:none;
-      border-bottom:1px solid rgba(26,20,16,.1);
-      color:var(--ink); padding:17px 0;
-      font-family:'Montserrat',sans-serif; font-size:12px; font-weight:300;
-      outline:none; transition:border-color .4s; letter-spacing:.3px;
-    }
-    .cf-grp input::placeholder, .cf-grp textarea::placeholder {
-      color:rgba(26,20,16,.3); font-size:11px; letter-spacing:1px;
-    }
-    .cf-grp input:focus, .cf-grp select:focus, .cf-grp textarea:focus {
-      border-bottom-color: var(--gold);
-    }
-    .cf-grp select { appearance:none; cursor:none; }
-    .cf-grp select option { background:var(--white); }
+    .cf-grp input::placeholder, .cf-grp textarea::placeholder { color: rgba(26,20,16,.28); font-size: 11px; letter-spacing: 1px; }
+    .cf-grp input:focus, .cf-grp select:focus, .cf-grp textarea:focus { border-bottom-color: var(--gold); }
+    .cf-grp select { appearance: none; cursor: pointer; }
+    .cf-grp select option { background: var(--white); }
     .cf-submit {
-      width:100%; padding:20px; margin-top:28px;
-      background:var(--ink); color:var(--white); border:none;
-      font-family:'Montserrat',sans-serif; font-size:10px;
-      letter-spacing:4px; text-transform:uppercase; font-weight:600;
-      cursor:none; transition:all .4s; position:relative; overflow:hidden;
+      width: 100%; padding: 18px; margin-top: 24px;
+      background: var(--ink); color: var(--white); border: none;
+      font-family: 'Montserrat', sans-serif; font-size: 10px;
+      letter-spacing: 4px; text-transform: uppercase; font-weight: 600;
+      cursor: pointer; transition: background .35s;
     }
-    .cf-submit::before {
-      content:''; position:absolute; inset:0; background:var(--gold);
-      transform:translateX(-101%); transition:transform .4s;
-    }
-    .cf-submit span { position:relative; z-index:1; }
-    .cf-submit:hover::before { transform:translateX(0); }
+    .cf-submit:hover { background: var(--gold); }
 
     /* ── RERA ── */
     .rera {
-      background:var(--ink); padding:22px 120px;
-      display:flex; align-items:center; justify-content:center; gap:36px; flex-wrap:wrap;
+      background: var(--ink); padding: 20px 80px;
+      display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap;
     }
-    .rera-lbl { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.35); }
-    .rera-val { font-size:9px; color:rgba(255,255,255,.2); letter-spacing:1px; }
-    .rera-sep { width:1px; height:12px; background:rgba(255,255,255,.08); }
+    .rera-lbl { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,.3); }
+    .rera-val { font-size: 9px; color: rgba(255,255,255,.18); letter-spacing: .5px; }
+    .rera-sep { width: 1px; height: 12px; background: rgba(255,255,255,.07); }
 
     /* ── FOOTER ── */
     footer {
-      background:var(--cream); padding:48px 120px;
-      display:flex; align-items:center; justify-content:space-between;
-      border-top:1px solid rgba(154,123,63,.15);
+      background: var(--cream); padding: 44px 80px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(154,123,63,.14); gap: 20px; flex-wrap: wrap;
     }
-    .ft-logo {
-      font-family:'Cormorant Garamond',serif; font-size:15px; font-weight:400;
-      letter-spacing:6px; text-transform:uppercase; color:var(--gold);
-    }
-    .ft-copy { font-size:9px; color:var(--muted2); letter-spacing:1px; }
-    .ft-links { display:flex; gap:32px; }
-    .ft-links a {
-      font-size:9px; letter-spacing:2px; text-transform:uppercase;
-      color:var(--muted2); text-decoration:none; transition:color .3s;
-    }
-    .ft-links a:hover { color:var(--gold); }
+    .ft-logo { font-family: 'Cormorant Garamond', serif; font-size: 14px; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); }
+    .ft-copy { font-size: 9px; color: var(--muted2); letter-spacing: .5px; }
+    .ft-links { display: flex; gap: 28px; }
+    .ft-links a { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted2); text-decoration: none; transition: color .3s; }
+    .ft-links a:hover { color: var(--gold); }
 
-    /* ── REVEAL SYSTEM ── */
-    [data-r] {
-      opacity:0;
-      transition: opacity .9s ease, transform .9s cubic-bezier(.16,1,.3,1);
-    }
-    [data-r="up"]    { transform:translateY(56px); }
-    [data-r="left"]  { transform:translateX(-56px); }
-    [data-r="right"] { transform:translateX(56px); }
-    [data-r="scale"] { transform:scale(.94); }
-    [data-r].on      { opacity:1; transform:none; }
-    [data-d="1"] { transition-delay:.1s; }
-    [data-d="2"] { transition-delay:.2s; }
-    [data-d="3"] { transition-delay:.3s; }
-    [data-d="4"] { transition-delay:.4s; }
-    [data-d="5"] { transition-delay:.5s; }
+    /* ── REVEAL ── */
+    [data-r] { opacity: 0; transition: opacity .85s ease, transform .85s cubic-bezier(.16,1,.3,1); }
+    [data-r="up"]    { transform: translateY(48px); }
+    [data-r="left"]  { transform: translateX(-48px); }
+    [data-r="right"] { transform: translateX(48px); }
+    [data-r].on { opacity: 1; transform: none; }
+    [data-d="1"] { transition-delay: .1s; }
+    [data-d="2"] { transition-delay: .2s; }
+    [data-d="3"] { transition-delay: .3s; }
+    [data-d="4"] { transition-delay: .4s; }
+    [data-d="5"] { transition-delay: .5s; }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width:1024px) {
-      nav, nav.scrolled { padding:20px 24px; }
-      .nav-links, .nav-cta { display:none; }
-      .overview, .concierge-section { grid-template-columns:1fr; padding:80px 24px; gap:60px; }
-      .ov-accent { display:none; }
-      .gallery-head { padding:60px 24px 40px; flex-direction:column; align-items:flex-start; gap:16px; }
-      .gallery-mosaic { grid-template-columns:1fr 1fr; }
-      .gm.tall { grid-row:auto; }
-      .amenities-section { padding:80px 24px; }
-      .am-features { grid-template-columns:1fr; }
-      .am-grid { grid-template-columns:repeat(3,1fr); }
-      .loc-top { grid-template-columns:1fr; }
-      .loc-info { padding:60px 24px; }
-      .pricing-section { padding:80px 24px; }
-      .price-cards { grid-template-columns:1fr; }
-      .contact-section { grid-template-columns:1fr; }
-      .con-vis { display:none; }
-      .con-form-wrap { padding:60px 24px; }
-      footer { flex-direction:column; gap:20px; text-align:center; padding:40px 24px; }
-      .rera { padding:20px 24px; }
-      .pb-content { padding:0 24px; }
-      .loc-strip { grid-template-columns:1fr 1fr; }
-      body { cursor:auto; }
-      .cursor,.cursor-ring { display:none; }
+    /* ════════════════════════════
+       MOBILE — max 768px
+    ════════════════════════════ */
+    @media (max-width: 768px) {
+      /* nav */
+      nav { padding: 20px 24px; }
+      nav.scrolled { padding: 14px 24px; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-drawer { display: flex; }
+
+      /* hero */
+      .hero { min-height: 100svh; }
+      .hero-h1 { font-size: clamp(44px, 12vw, 72px); }
+      .hero-tag span { font-size: 8px; letter-spacing: 3px; }
+      .hero-stats { gap: 28px; }
+      .h-stat-num { font-size: 30px; }
+      .hero-btns { flex-direction: column; align-items: center; }
+      .btn-ink, .btn-outline { padding: 15px 36px; width: 100%; max-width: 280px; text-align: center; }
+
+      /* ticker */
+      .ticker { padding: 14px 0; }
+
+      /* overview */
+      .overview { padding: 72px 24px; }
+      .overview-inner { grid-template-columns: 1fr; gap: 60px; }
+      .ov-main { height: 320px; }
+      .ov-accent { display: none; }
+      .ov-badge { width: 76px; height: 76px; top: -12px; left: -12px; }
+      .ov-badge strong { font-size: 22px; }
+      .ov-nums { grid-template-columns: 1fr 1fr; gap: 24px; }
+
+      /* gallery */
+      .gallery-head { padding: 60px 24px 40px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .gallery-head p { text-align: left; }
+      .gallery-mosaic {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 200px 200px 200px;
+      }
+      .gm.tall { grid-column: 1 / 3; grid-row: 1; }
+
+      /* amenities */
+      .amenities-section { padding: 72px 24px; }
+      .am-features { grid-template-columns: 1fr; gap: 4px; }
+      .am-feat { height: 280px; }
+      .am-grid { grid-template-columns: repeat(3,1fr); }
+
+      /* quote */
+      .quote-banner { min-height: 360px; }
+      .qb-content { padding: 0 24px; }
+      .qb-quote { font-size: clamp(20px, 5vw, 32px); }
+
+      /* concierge */
+      .concierge-section { padding: 72px 24px; }
+      .concierge-inner { grid-template-columns: 1fr; gap: 56px; }
+      .con-img { height: 300px; }
+      .con-stat { display: none; }
+
+      /* location */
+      .loc-top { grid-template-columns: 1fr; }
+      .loc-map img { min-height: 260px; }
+      .loc-info { padding: 56px 24px; }
+      .loc-cards { grid-template-columns: 1fr 1fr; }
+      .loc-strip { grid-template-columns: 1fr 1fr; }
+      .ls { padding: 28px 16px; }
+
+      /* pricing */
+      .pricing-section { padding: 72px 24px; }
+      .price-cards { grid-template-columns: 1fr; gap: 4px; }
+      .pc { padding: 48px 32px; }
+      .pc:hover { transform: none; }
+
+      /* contact */
+      .contact-section { grid-template-columns: 1fr; }
+      .con-vis { display: none; }
+      .con-form-wrap { padding: 64px 24px; }
+      .cf-row { grid-template-columns: 1fr; }
+
+      /* rera / footer */
+      .rera { padding: 18px 24px; flex-direction: column; gap: 8px; text-align: center; }
+      .rera-sep { display: none; }
+      footer { padding: 36px 24px; flex-direction: column; text-align: center; gap: 16px; }
+      .ft-links { justify-content: center; }
+    }
+
+    /* tablet — 769–1024 */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      nav { padding: 24px 40px; }
+      nav.scrolled { padding: 16px 40px; }
+      .overview { padding: 100px 48px; }
+      .overview-inner { gap: 60px; }
+      .ov-accent { display: none; }
+      .gallery-head { padding: 72px 48px 48px; }
+      .amenities-section { padding: 100px 48px; }
+      .am-grid { grid-template-columns: repeat(3,1fr); }
+      .concierge-section { padding: 100px 48px; }
+      .concierge-inner { gap: 60px; }
+      .con-stat { right: -24px; }
+      .loc-info { padding: 64px 40px; }
+      .pricing-section { padding: 100px 48px; }
+      .price-cards { grid-template-columns: 1fr; }
+      .contact-section { grid-template-columns: 1fr; }
+      .con-vis { display: none; }
+      .con-form-wrap { padding: 72px 48px; }
+      footer { padding: 40px 48px; }
+      .rera { padding: 20px 48px; }
     }
   </style>
 </head>
 <body>
-
-<!-- CURSOR -->
-<div class="cursor" id="cur"></div>
-<div class="cursor-ring" id="ring"></div>
 
 <!-- LOADER -->
 <div id="loader">
@@ -773,14 +699,25 @@
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"><span>Enquire Now</span></button>
+  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Enquire Now</button>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- ════ HERO ════ -->
+<!-- MOBILE DRAWER -->
+<div class="nav-drawer" id="drawer">
+  <a href="#overview"  onclick="closeDrawer()">Overview</a>
+  <a href="#amenities" onclick="closeDrawer()">Amenities</a>
+  <a href="#location"  onclick="closeDrawer()">Location</a>
+  <a href="#pricing"   onclick="closeDrawer()">Pricing</a>
+  <a href="#contact"   onclick="closeDrawer()">Contact</a>
+  <a href="#contact"   onclick="closeDrawer()" class="drawer-cta">Enquire Now</a>
+</div>
+
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-media">
-    <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/WestinRes2-4-25-358-Enhanced-NR_Web.webp" alt="Westin Residences" />
-  </div>
+  <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/WestinRes2-4-25-358-Enhanced-NR_Web.webp" alt="The Westin Residences" />
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-tag">
@@ -802,8 +739,8 @@
       <div><div class="h-stat-num">3<span>–</span>4</div><div class="h-stat-label">BHK</div></div>
     </div>
     <div class="hero-btns">
-      <a class="btn-dark" href="#contact"><span>Schedule a Private Visit</span></a>
-      <a class="btn-outline-dark" href="#overview">Discover More</a>
+      <a class="btn-ink" href="#contact">Schedule a Private Visit</a>
+      <a class="btn-outline" href="#overview">Discover More</a>
     </div>
   </div>
   <div class="scroll-hint">
@@ -818,208 +755,247 @@
     <div class="ti">The Westin Residences</div><div class="ti">Gurugram</div>
     <div class="ti">India's First</div><div class="ti">30+ World-Class Amenities</div>
     <div class="ti">Marriott International</div><div class="ti">Sector 103</div>
-    <div class="ti">₹7 Crore Onwards</div><div class="ti">3 & 4 BHK</div>
+    <div class="ti">₹7 Crore Onwards</div><div class="ti">3 &amp; 4 BHK</div>
     <div class="ti">The Westin Residences</div><div class="ti">Gurugram</div>
     <div class="ti">India's First</div><div class="ti">30+ World-Class Amenities</div>
     <div class="ti">Marriott International</div><div class="ti">Sector 103</div>
-    <div class="ti">₹7 Crore Onwards</div><div class="ti">3 & 4 BHK</div>
+    <div class="ti">₹7 Crore Onwards</div><div class="ti">3 &amp; 4 BHK</div>
   </div>
 </div>
 
-<!-- ════ OVERVIEW ════ -->
+<!-- OVERVIEW -->
 <section class="overview" id="overview">
-  <div class="ov-visual" data-r="left">
-    <div class="ov-badge"><strong>22</strong><small>Acres</small></div>
-    <div class="ov-main live-img kb-zoom-out">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="Grand Entrance" />
+  <div class="overview-inner">
+    <div class="ov-visual" data-r="left">
+      <div class="ov-badge"><strong>22</strong><small>Acres</small></div>
+      <img class="ov-main" src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="Grand Entrance" />
+      <img class="ov-accent" src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_01_52-PM.webp" alt="Interior" />
     </div>
-    <div class="ov-accent live-img kb-pan-left">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_01_52-PM.webp" alt="Interior" />
-    </div>
-  </div>
-  <div class="ov-text" data-r="right">
-    <p class="tag">The Residence</p>
-    <h2 class="sh">Lifestyle,<br>Wellness &<br><em>Luxury.</em></h2>
-    <div class="rule"></div>
-    <p class="body">The Westin Residences Gurugram is a landmark address that fuses the timeless elegance of a five-star hotel with the deep intimacy of home. Designed to Westin's exacting global standards, every residence is an expression of understated grandeur.</p>
-    <p class="body" style="margin-top:16px;">Conceived by Whiteland Corporation in partnership with Marriott International, this is not merely a home — it is a curated way of life.</p>
-    <div class="ov-pills">
-      <span class="pill">3 & 4 BHK</span>
-      <span class="pill">Westin Operated</span>
-      <span class="pill">RERA Registered</span>
-      <span class="pill">Marriott Privileges</span>
-    </div>
-    <div class="ov-nums">
-      <div data-r="up" data-d="1"><div class="ov-num-val">9,500+</div><div class="ov-num-label">Marriott Hotels Access</div></div>
-      <div data-r="up" data-d="2"><div class="ov-num-val">40+</div><div class="ov-num-label">Countries of Privilege</div></div>
-      <div data-r="up" data-d="3"><div class="ov-num-val">30+</div><div class="ov-num-label">World-Class Amenities</div></div>
-      <div data-r="up" data-d="4"><div class="ov-num-val">24/7</div><div class="ov-num-label">Concierge Service</div></div>
+    <div class="ov-text" data-r="right">
+      <p class="tag">The Residence</p>
+      <h2 class="sh">Lifestyle,<br>Wellness &amp;<br><em>Luxury.</em></h2>
+      <div class="rule"></div>
+      <p class="body-p">The Westin Residences Gurugram is a landmark address that fuses the timeless elegance of a five-star hotel with the deep intimacy of home. Designed to Westin's exacting global standards, every residence is an expression of understated grandeur.</p>
+      <p class="body-p" style="margin-top:14px;">Conceived by Whiteland Corporation in partnership with Marriott International, this is not merely a home — it is a curated way of life.</p>
+      <div class="ov-pills">
+        <span class="pill">3 &amp; 4 BHK</span>
+        <span class="pill">Westin Operated</span>
+        <span class="pill">RERA Registered</span>
+        <span class="pill">Marriott Privileges</span>
+      </div>
+      <div class="ov-nums">
+        <div data-r="up" data-d="1"><div class="ov-num-val">9,500+</div><div class="ov-num-lbl">Marriott Hotels</div></div>
+        <div data-r="up" data-d="2"><div class="ov-num-val">40+</div><div class="ov-num-lbl">Countries</div></div>
+        <div data-r="up" data-d="3"><div class="ov-num-val">30+</div><div class="ov-num-lbl">Amenities</div></div>
+        <div data-r="up" data-d="4"><div class="ov-num-val">24/7</div><div class="ov-num-lbl">Concierge</div></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ════ GALLERY ════ -->
+<!-- GALLERY -->
 <section class="gallery-section">
   <div class="gallery-head">
     <div data-r="left">
       <p class="tag">The Property</p>
       <h2 class="sh">A Glimpse of<br><em>Your New Life</em></h2>
     </div>
-    <p class="body" style="max-width:320px; text-align:right;" data-r="right">Every corner curated to inspire, restore, and elevate.</p>
+    <p class="body-p" style="max-width:300px;text-align:right;" data-r="right">Every corner curated to inspire, restore, and elevate.</p>
   </div>
   <div class="gallery-mosaic">
-    <div class="gm tall live-img kb-zoom-in" data-r="left">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="Club" />
-      <div class="gm-info"><div class="gm-label">Grand Entrance</div><div class="gm-title">Club Drop-Off & Arrival</div></div>
+    <div class="gm tall" data-r="left">
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="Club Entrance" />
+      <div class="gm-info"><div class="gm-label">Grand Entrance</div><div class="gm-title">Club Drop-Off &amp; Arrival</div></div>
     </div>
-    <div class="gm live-img kb-pan-right" data-r="up" data-d="1">
+    <div class="gm" data-r="up" data-d="1">
       <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-02_58_24-PM.webp" alt="Interior" />
       <div class="gm-info"><div class="gm-label">Residences</div><div class="gm-title">Luxury Interiors</div></div>
     </div>
-    <div class="gm live-img kb-drift" data-r="up" data-d="2">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-11_39_53-AM.png" alt="View" />
+    <div class="gm" data-r="up" data-d="2">
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-11_39_53-AM.png" alt="Views" />
       <div class="gm-info"><div class="gm-label">Views</div><div class="gm-title">Panoramic Vistas</div></div>
     </div>
-    <div class="gm live-img kb-pan-left" data-r="up" data-d="2">
+    <div class="gm" data-r="up" data-d="2">
       <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-Waterfall_Web.webp" alt="Waterfall" />
       <div class="gm-info"><div class="gm-label">Water Feature</div><div class="gm-title">Signature Waterfall</div></div>
     </div>
-    <div class="gm live-img kb-zoom-out" data-r="up" data-d="3">
+    <div class="gm" data-r="up" data-d="3">
       <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_14_17-PM.webp" alt="Clubhouse" />
       <div class="gm-info"><div class="gm-label">Clubhouse</div><div class="gm-title">India's Largest Clubhouse</div></div>
     </div>
   </div>
 </section>
 
-<!-- ════ AMENITIES ════ -->
+<!-- AMENITIES -->
 <section class="amenities-section" id="amenities">
   <div class="am-head" data-r="up">
     <p class="tag" style="justify-content:center;">World-Class Facilities</p>
     <h2 class="sh" style="text-align:center;">30+ Amenities.<br>For <em>Elite Living.</em></h2>
-    <div class="rule" style="margin:24px auto;"></div>
-    <p class="body" style="margin:0 auto;text-align:center;max-width:520px;">Built to Westin's uncompromising global standard — every facility designed to serve, inspire, and restore.</p>
+    <div class="rule" style="margin:22px auto;"></div>
+    <p class="body-p" style="margin:0 auto;text-align:center;max-width:500px;">Built to Westin's uncompromising global standard — every facility designed to serve, inspire, and restore.</p>
   </div>
   <div class="am-features">
-    <div class="am-feat live-img kb-zoom-in" data-r="up" data-d="1">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_01_52-PM.webp" alt="Spa" />
+    <div class="am-feat" data-r="up" data-d="1">
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_01_52-PM.webp" alt="Wellness Spa" />
       <div class="am-feat-body">
-        <div class="am-icon">🧖</div>
+        <!-- Spa leaf SVG -->
+        <svg class="am-icon" viewBox="0 0 24 24"><path d="M12 22s-8-5-8-11a8 8 0 0116 0c0 6-8 11-8 11z"/><path d="M12 11v11"/></svg>
         <div class="am-ftitle">Wellness Spa</div>
-        <div class="am-fsub">Westin signature wellness rituals & treatments</div>
+        <div class="am-fsub">Westin signature wellness rituals &amp; treatments</div>
         <div class="am-fline"></div>
       </div>
     </div>
-    <div class="am-feat live-img kb-pan-right" data-r="up" data-d="2">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-Waterfall_Web.webp" alt="Pool" />
+    <div class="am-feat" data-r="up" data-d="2">
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-Waterfall_Web.webp" alt="Infinity Pool" />
       <div class="am-feat-body">
-        <div class="am-icon">♾️</div>
+        <!-- Waves SVG -->
+        <svg class="am-icon" viewBox="0 0 24 24"><path d="M2 12c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 17c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/><path d="M2 7c1.5-2 3.5-2 5 0s3.5 2 5 0 3.5-2 5 0"/></svg>
         <div class="am-ftitle">Infinity Pool</div>
         <div class="am-fsub">Resort-style expanse with horizon views</div>
         <div class="am-fline"></div>
       </div>
     </div>
-    <div class="am-feat live-img kb-drift" data-r="up" data-d="3">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_14_17-PM.webp" alt="Clubhouse" />
+    <div class="am-feat" data-r="up" data-d="3">
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_14_17-PM.webp" alt="Grand Clubhouse" />
       <div class="am-feat-body">
-        <div class="am-icon">🏛️</div>
+        <!-- Building SVG -->
+        <svg class="am-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
         <div class="am-ftitle">Grand Clubhouse</div>
         <div class="am-fsub">India's largest residential clubhouse</div>
         <div class="am-fline"></div>
       </div>
     </div>
   </div>
-  <div class="am-grid" style="margin-top:4px;">
-    <div class="am-mini" data-r="up" data-d="1"><span class="am-mini-icon">🏋️</span><p class="am-mini-name">Fitness<br>Centre</p></div>
-    <div class="am-mini" data-r="up" data-d="2"><span class="am-mini-icon">🍷</span><p class="am-mini-name">Fine<br>Dining</p></div>
-    <div class="am-mini" data-r="up" data-d="3"><span class="am-mini-icon">🎾</span><p class="am-mini-name">Sports<br>Courts</p></div>
-    <div class="am-mini" data-r="up" data-d="4"><span class="am-mini-icon">🌿</span><p class="am-mini-name">Zen<br>Gardens</p></div>
-    <div class="am-mini" data-r="up" data-d="4"><span class="am-mini-icon">🎭</span><p class="am-mini-name">Event<br>Spaces</p></div>
-    <div class="am-mini" data-r="up" data-d="5"><span class="am-mini-icon">🧒</span><p class="am-mini-name">Kids'<br>Zone</p></div>
+  <div class="am-grid">
+    <div class="am-mini" data-r="up" data-d="1">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M8 12h8M12 8v8"/></svg>
+      <p class="am-mini-name">Fitness<br>Centre</p>
+    </div>
+    <div class="am-mini" data-r="up" data-d="2">
+      <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+      <p class="am-mini-name">Fine<br>Dining</p>
+    </div>
+    <div class="am-mini" data-r="up" data-d="3">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l4 4"/></svg>
+      <p class="am-mini-name">Sports<br>Courts</p>
+    </div>
+    <div class="am-mini" data-r="up" data-d="3">
+      <svg viewBox="0 0 24 24"><path d="M12 22s-6-4-6-9a6 6 0 0112 0c0 5-6 9-6 9z"/><path d="M12 13v9"/></svg>
+      <p class="am-mini-name">Zen<br>Gardens</p>
+    </div>
+    <div class="am-mini" data-r="up" data-d="4">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      <p class="am-mini-name">Event<br>Spaces</p>
+    </div>
+    <div class="am-mini" data-r="up" data-d="5">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 00-2-2H6a2 2 0 00-2 2v8"/><path d="M1 21h22M10 21V12h4v9"/></svg>
+      <p class="am-mini-name">Kids'<br>Zone</p>
+    </div>
   </div>
 </section>
 
-<!-- ════ PARALLAX QUOTE ════ -->
-<section class="parallax-banner">
-  <div class="pb-bg" id="pbBg">
-    <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/WestinRes2-4-25-530-Enhanced-NR_Web.webp" alt="Westin" />
+<!-- QUOTE BANNER -->
+<section class="quote-banner">
+  <div class="qb-img" id="qbImg">
+    <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/WestinRes2-4-25-530-Enhanced-NR_Web.webp" alt="" />
   </div>
-  <div class="pb-content">
-    <div class="pb-rule">
-      <div class="pb-rule-line"></div>
-      <div class="pb-rule-gem">✦</div>
-      <div class="pb-rule-line"></div>
+  <div class="qb-content">
+    <div class="qb-rule">
+      <div class="qb-rule-line"></div>
+      <div class="qb-rule-gem"></div>
+      <div class="qb-rule-line"></div>
     </div>
-    <blockquote class="pb-quote" data-r="up">
+    <blockquote class="qb-quote" data-r="up">
       "Live among the invited few.<br>One residency. <em>A lifetime of being recognised.</em>"
     </blockquote>
-    <p class="pb-attr" data-r="up" data-d="2">The Westin Residences, Gurugram</p>
+    <p class="qb-attr" data-r="up" data-d="2">The Westin Residences, Gurugram</p>
   </div>
 </section>
 
-<!-- ════ CONCIERGE ════ -->
+<!-- CONCIERGE -->
 <section class="concierge-section">
-  <div class="con-visual" data-r="left">
-    <div class="con-img live-img kb-zoom-in">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-23-2026-01_42_20-PM.png" alt="Concierge" />
+  <div class="concierge-inner">
+    <div class="con-visual" data-r="left">
+      <img class="con-img" src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-23-2026-01_42_20-PM.png" alt="Concierge" />
+      <div class="con-stat">
+        <div class="con-stat-val">24/7</div>
+        <div class="con-stat-lbl">Personalised<br>Concierge Service</div>
+      </div>
     </div>
-    <div class="con-stat">
-      <div class="con-stat-val">24/7</div>
-      <div class="con-stat-label">Personalised<br>Concierge Service</div>
-    </div>
-  </div>
-  <div data-r="right">
-    <p class="tag">Bespoke Services</p>
-    <h2 class="sh">Always at<br>Your <em>Service.</em></h2>
-    <div class="rule"></div>
-    <p class="body">From the moment you arrive to the moment you depart — our dedicated team anticipates your every desire with the warmth and precision of Westin hospitality.</p>
-    <div class="svcs">
-      <div class="svc"><span class="svc-icon">🛎️</span><span class="svc-text">24/7 Personal Concierge & Butler Service</span><span class="svc-arr">→</span></div>
-      <div class="svc"><span class="svc-icon">🚗</span><span class="svc-text">Airport Transfers & Private Chauffeur</span><span class="svc-arr">→</span></div>
-      <div class="svc"><span class="svc-icon">🍽️</span><span class="svc-text">In-Residence Private Dining & Chef</span><span class="svc-arr">→</span></div>
-      <div class="svc"><span class="svc-icon">🌿</span><span class="svc-text">Personalised Wellness & Spa Programmes</span><span class="svc-arr">→</span></div>
-      <div class="svc"><span class="svc-icon">🔱</span><span class="svc-text">ONVIA Club — 9,500+ Hotels in 40+ Countries</span><span class="svc-arr">→</span></div>
+    <div data-r="right">
+      <p class="tag">Bespoke Services</p>
+      <h2 class="sh">Always at<br>Your <em>Service.</em></h2>
+      <div class="rule"></div>
+      <p class="body-p">From the moment you arrive to the moment you depart — our dedicated team anticipates your every desire with the warmth and precision of Westin hospitality.</p>
+      <div class="svcs">
+        <div class="svc">
+          <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          <span class="svc-text">24/7 Personal Concierge &amp; Butler Service</span>
+          <span class="svc-arr">→</span>
+        </div>
+        <div class="svc">
+          <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <span class="svc-text">Airport Transfers &amp; Private Chauffeur</span>
+          <span class="svc-arr">→</span>
+        </div>
+        <div class="svc">
+          <svg viewBox="0 0 24 24"><path d="M3 2h18l-2 7H5L3 2z"/><path d="M5 9l-1 13h16L19 9"/><path d="M9 13h6"/></svg>
+          <span class="svc-text">In-Residence Private Dining &amp; Chef</span>
+          <span class="svc-arr">→</span>
+        </div>
+        <div class="svc">
+          <svg viewBox="0 0 24 24"><path d="M12 22s-8-5-8-11a8 8 0 0116 0c0 6-8 11-8 11z"/><circle cx="12" cy="11" r="3"/></svg>
+          <span class="svc-text">Personalised Wellness &amp; Spa Programmes</span>
+          <span class="svc-arr">→</span>
+        </div>
+        <div class="svc">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <span class="svc-text">ONVIA Club — 9,500+ Hotels in 40+ Countries</span>
+          <span class="svc-arr">→</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ════ LOCATION ════ -->
+<!-- LOCATION -->
 <section class="location-section" id="location">
   <div class="loc-top">
-    <div class="loc-map live-img kb-pan-left">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/The-Westin-Gurugram-Location-Map-9.webp" alt="Map" />
+    <div class="loc-map">
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/The-Westin-Gurugram-Location-Map-9.webp" alt="Location Map" />
     </div>
     <div class="loc-info" data-r="right">
       <p class="tag">Prime Location</p>
       <h2 class="sh">Well-Placed.<br><em>Well-Connected.</em></h2>
       <div class="rule"></div>
-      <p class="body">Perfectly positioned on Dwarka Expressway, The Westin Residences places the finest of Gurugram and Delhi within effortless reach — while maintaining the serenity of a private sanctuary.</p>
+      <p class="body-p">Perfectly positioned on Dwarka Expressway, The Westin Residences places the finest of Gurugram and Delhi within effortless reach — while maintaining the serenity of a private sanctuary.</p>
       <div class="loc-cards">
-        <div class="lc"><div class="lc-time">15 <span style="font-size:16px;">min</span></div><div class="lc-name">IGI Airport</div><div class="lc-sub">✈ International Terminal</div></div>
-        <div class="lc"><div class="lc-time">25 <span style="font-size:16px;">min</span></div><div class="lc-name">Cyber City</div><div class="lc-sub">🏙 Business Hub</div></div>
-        <div class="lc"><div class="lc-time">5 <span style="font-size:16px;">min</span></div><div class="lc-name">NH-48</div><div class="lc-sub">🛣 National Highway</div></div>
-        <div class="lc"><div class="lc-time" style="font-size:26px;">Walk</div><div class="lc-name">Metro Station</div><div class="lc-sub">🚇 Proposed Line</div></div>
+        <div class="lc"><div class="lc-time">15 <span style="font-size:15px;">min</span></div><div class="lc-name">IGI Airport</div><div class="lc-sub">International Terminal</div></div>
+        <div class="lc"><div class="lc-time">25 <span style="font-size:15px;">min</span></div><div class="lc-name">Cyber City</div><div class="lc-sub">Business Hub</div></div>
+        <div class="lc"><div class="lc-time">5 <span style="font-size:15px;">min</span></div><div class="lc-name">NH-48</div><div class="lc-sub">National Highway</div></div>
+        <div class="lc"><div class="lc-time" style="font-size:22px;">Walk</div><div class="lc-name">Metro Station</div><div class="lc-sub">Proposed Line</div></div>
       </div>
     </div>
   </div>
   <div class="loc-strip">
-    <div class="ls" data-r="up" data-d="1"><div class="ls-val">Sector 103</div><div class="ls-label">Prime Address</div></div>
-    <div class="ls" data-r="up" data-d="2"><div class="ls-val">22 Acres</div><div class="ls-label">Luxury Development</div></div>
-    <div class="ls" data-r="up" data-d="3"><div class="ls-val">Dwarka Exp.</div><div class="ls-label">Arterial Corridor</div></div>
-    <div class="ls" data-r="up" data-d="4"><div class="ls-val">Gurugram</div><div class="ls-label">Haryana, India</div></div>
+    <div class="ls" data-r="up" data-d="1"><div class="ls-val">Sector 103</div><div class="ls-lbl">Prime Address</div></div>
+    <div class="ls" data-r="up" data-d="2"><div class="ls-val">22 Acres</div><div class="ls-lbl">Development</div></div>
+    <div class="ls" data-r="up" data-d="3"><div class="ls-val">Dwarka Exp.</div><div class="ls-lbl">Arterial Corridor</div></div>
+    <div class="ls" data-r="up" data-d="4"><div class="ls-val">Gurugram</div><div class="ls-lbl">Haryana, India</div></div>
   </div>
 </section>
 
-<!-- ════ PRICING ════ -->
+<!-- PRICING -->
 <section class="pricing-section" id="pricing">
   <div data-r="up">
     <p class="tag" style="justify-content:center;">Residences</p>
     <h2 class="sh" style="text-align:center;">Own Your<br><em>Masterpiece</em></h2>
-    <div class="rule" style="margin:28px auto;"></div>
+    <div class="rule" style="margin:24px auto;"></div>
   </div>
   <div class="price-cards">
     <div class="pc" data-r="up" data-d="1">
       <div class="pc-type">3 BHK</div>
-      <div class="pc-amt">₹7 Cr<span style="font-size:24px;color:var(--muted);">+</span></div>
+      <div class="pc-amt">₹7 Cr<span style="font-size:22px;color:var(--muted);">+</span></div>
       <div class="pc-onward">Onwards</div>
       <div class="pc-rule"></div>
       <ul class="pc-list">
@@ -1027,14 +1003,14 @@
         <li>Premium Westin finishes</li>
         <li>Full clubhouse access</li>
         <li>Dedicated concierge</li>
-        <li>Valet & parking</li>
+        <li>Valet &amp; parking</li>
       </ul>
       <a class="pc-btn dark" href="#contact">Enquire Now</a>
     </div>
     <div class="pc feat" data-r="up" data-d="2">
       <div class="pc-badge">Most Exclusive</div>
       <div class="pc-type">4 BHK</div>
-      <div class="pc-amt">₹10 Cr<span style="font-size:24px;color:rgba(255,255,255,.3);">+</span></div>
+      <div class="pc-amt">₹10 Cr<span style="font-size:22px;color:rgba(255,255,255,.3);">+</span></div>
       <div class="pc-onward">Onwards</div>
       <div class="pc-rule"></div>
       <ul class="pc-list">
@@ -1048,7 +1024,7 @@
     </div>
     <div class="pc" data-r="up" data-d="3">
       <div class="pc-type">Penthouse</div>
-      <div class="pc-amt" style="font-size:36px;line-height:1.3;">On<br>Request</div>
+      <div class="pc-amt" style="font-size:32px;line-height:1.3;">On<br>Request</div>
       <div class="pc-onward">&nbsp;</div>
       <div class="pc-rule"></div>
       <ul class="pc-list">
@@ -1063,22 +1039,37 @@
   </div>
 </section>
 
-<!-- ════ CONTACT ════ -->
+<!-- CONTACT -->
 <section class="contact-section" id="contact">
-  <div class="con-vis live-img kb-zoom-in">
-    <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_14_17-PM.webp" alt="Westin" />
+  <div class="con-vis">
+    <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_14_17-PM.webp" alt="Westin Residences" />
     <div class="con-vis-overlay"></div>
     <div class="con-vis-text">
       <h3>Begin Your<br><em>Journey</em><br>Home.</h3>
-      <div class="rule" style="margin-top:20px;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.3);"></div>
+      <div class="rule" style="background:rgba(255,255,255,.3);"></div>
     </div>
   </div>
   <div class="con-form-wrap" data-r="right">
     <p class="tag">Get in Touch</p>
     <div class="cdets">
-      <div class="cd-row"><div class="cd-icon">📞</div><div><div class="cd-label">Phone</div><div class="cd-val">+91 7303 888 722</div></div></div>
-      <div class="cd-row"><div class="cd-icon">✉️</div><div><div class="cd-label">Email</div><div class="cd-val">info@westinresidency.co.in</div></div></div>
-      <div class="cd-row"><div class="cd-icon">📍</div><div><div class="cd-label">Address</div><div class="cd-val">Sector 103, Dwarka Expressway, Gurugram</div></div></div>
+      <div class="cd-row">
+        <div class="cd-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.1 1.18 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+        </div>
+        <div><div class="cd-label">Phone</div><div class="cd-val">+91 7303 888 722</div></div>
+      </div>
+      <div class="cd-row">
+        <div class="cd-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div><div class="cd-label">Email</div><div class="cd-val">info@westinresidency.co.in</div></div>
+      </div>
+      <div class="cd-row">
+        <div class="cd-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div><div class="cd-label">Address</div><div class="cd-val">Sector 103, Dwarka Expressway, Gurugram</div></div>
+      </div>
     </div>
     <p class="cf-title">Request a Private Viewing</p>
     <div class="cf-row">
@@ -1090,7 +1081,7 @@
     <div class="cf-grp">
       <select><option value="">Select Residence Type</option><option>3 BHK Residence</option><option>4 BHK Residence</option><option>Penthouse</option></select>
     </div>
-    <button class="cf-submit"><span>Request Private Viewing &nbsp;→</span></button>
+    <button class="cf-submit">Request Private Viewing &nbsp;→</button>
   </div>
 </section>
 
@@ -1110,47 +1101,52 @@
 <footer>
   <div class="ft-logo">The Westin Residences</div>
   <div class="ft-copy">© 2026 Whiteland Corporation. All rights reserved.</div>
-  <div class="ft-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#contact">Contact</a></div>
+  <div class="ft-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#contact">Contact</a>
+  </div>
 </footer>
 
 <script>
-  // ─ CURSOR
-  const cur = document.getElementById('cur');
-  const ring = document.getElementById('ring');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
-  (function animC(){
-    cur.style.left=mx+'px'; cur.style.top=my+'px';
-    rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
-    ring.style.left=rx+'px'; ring.style.top=ry+'px';
-    requestAnimationFrame(animC);
-  })();
-
-  // ─ LOADER
+  // ── LOADER
   const loader = document.getElementById('loader');
-  const killLoader = () => { loader.classList.add('done'); setTimeout(()=>loader.remove(), 900); };
-  window.addEventListener('load', ()=>setTimeout(killLoader, 1800));
+  const killLoader = () => { loader.classList.add('done'); setTimeout(() => loader.remove(), 900); };
+  window.addEventListener('load', () => setTimeout(killLoader, 1800));
   setTimeout(killLoader, 2800);
 
-  // ─ NAV SCROLL
+  // ── NAV SCROLL
   const nav = document.getElementById('nav');
-  window.addEventListener('scroll', ()=> nav.classList.toggle('scrolled', scrollY>60), {passive:true});
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60), { passive: true });
 
-  // ─ PARALLAX
-  const pbBg = document.getElementById('pbBg');
-  window.addEventListener('scroll', ()=>{
-    if(pbBg){
-      const rect = pbBg.closest('.parallax-banner').getBoundingClientRect();
-      pbBg.style.transform = `translateY(${-rect.top * 0.28}px)`;
-    }
-  }, {passive:true});
+  // ── HAMBURGER
+  const hamburger = document.getElementById('hamburger');
+  const drawer = document.getElementById('drawer');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    drawer.classList.toggle('open');
+    document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+  });
+  function closeDrawer() {
+    hamburger.classList.remove('open');
+    drawer.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 
-  // ─ REVEAL ON SCROLL
-  const els = document.querySelectorAll('[data-r]');
-  const ro = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); ro.unobserve(e.target); } });
-  }, {threshold:0.1});
-  els.forEach(el=>ro.observe(el));
+  // ── PARALLAX on quote banner only
+  const qbImg = document.getElementById('qbImg');
+  window.addEventListener('scroll', () => {
+    if (!qbImg) return;
+    const rect = qbImg.closest('.quote-banner').getBoundingClientRect();
+    qbImg.style.transform = `translateY(${-rect.top * 0.25}px)`;
+  }, { passive: true });
+
+  // ── SCROLL REVEAL
+  const revEls = document.querySelectorAll('[data-r]');
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  revEls.forEach(el => ro.observe(el));
 </script>
 </body>
 </html>
