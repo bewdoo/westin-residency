@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1A1410" />
   <title>The Westin Residences — Gurugram</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,14 +25,16 @@
       --muted2:    rgba(26,20,16,0.22);
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
     body {
       background: var(--white);
       color: var(--ink);
       font-family: 'Montserrat', sans-serif;
       font-weight: 300;
       overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
+    img { max-width: 100%; }
 
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--cream); }
@@ -84,6 +87,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 15px; letter-spacing: 6px; text-transform: uppercase;
       color: var(--ink); text-decoration: none; white-space: nowrap;
+      transition: font-size .3s, letter-spacing .3s;
     }
     .nav-logo em { color: var(--gold); font-style: normal; }
     .nav-links { display: flex; gap: 40px; list-style: none; }
@@ -579,24 +583,49 @@
     [data-d="5"] { transition-delay: .5s; }
 
     /* ════════════════════════════
+       TOUCH DEVICES — no hover, so
+       reveal hover-only content by default
+    ════════════════════════════ */
+    @media (hover: none) {
+      .gm-info { opacity: 1; background: linear-gradient(to top, rgba(26,20,16,.7) 0%, transparent 60%); }
+      .gm-label, .gm-title { transform: none; }
+      .am-fsub { opacity: 1; transform: none; }
+      .am-fline { width: 44px; }
+      .am-feat img { filter: brightness(.56); }
+      .svc-arr { opacity: 1; transform: none; }
+    }
+
+    /* ════════════════════════════
        MOBILE — max 768px
     ════════════════════════════ */
     @media (max-width: 768px) {
       /* nav */
-      nav { padding: 20px 24px; }
-      nav.scrolled { padding: 14px 24px; }
+      nav {
+        padding: 18px 22px;
+        padding-left: max(22px, env(safe-area-inset-left));
+        padding-right: max(22px, env(safe-area-inset-right));
+      }
+      nav.scrolled { padding-top: 12px; padding-bottom: 12px; }
+      .nav-logo { font-size: 12px; letter-spacing: 3px; }
       .nav-links, .nav-cta { display: none; }
-      .nav-hamburger { display: flex; }
-      .nav-drawer { display: flex; }
+      .nav-hamburger { display: flex; margin-left: 12px; flex-shrink: 0; }
+      .nav-drawer {
+        display: flex;
+        padding-left: max(40px, env(safe-area-inset-left));
+        padding-right: max(40px, env(safe-area-inset-right));
+      }
 
       /* hero */
       .hero { min-height: 100svh; }
-      .hero-content { padding: 0 20px; }
+      .hero-content { padding: 0 22px; }
       .hero-overlay {
         background:
-          linear-gradient(to top, rgba(250,247,242,.97) 0%, rgba(250,247,242,.75) 40%, rgba(250,247,242,.35) 70%, transparent 100%),
-          linear-gradient(to bottom, rgba(250,247,242,.6) 0%, transparent 18%);
+          linear-gradient(to top, rgba(250,247,242,.99) 0%, rgba(250,247,242,.92) 32%, rgba(250,247,242,.6) 58%, rgba(250,247,242,.3) 80%, rgba(250,247,242,.12) 100%),
+          linear-gradient(to bottom, rgba(250,247,242,.7) 0%, transparent 22%);
       }
+      .hero-tag span { text-shadow: 0 1px 12px rgba(250,247,242,.9); }
+      .hero-h1 { text-shadow: 0 2px 20px rgba(250,247,242,.7); }
+      .hero-sub { color: rgba(26,20,16,.8); text-shadow: 0 1px 10px rgba(250,247,242,.8); }
       .hero-tag { gap: 10px; margin-bottom: 18px; }
       .hero-tag-line { width: 24px; }
       .hero-tag span { font-size: 8px; letter-spacing: 3px; }
@@ -631,10 +660,11 @@
 
       /* gallery */
       .gallery-head { padding: 60px 24px 40px; flex-direction: column; align-items: flex-start; gap: 16px; }
-      .gallery-head p { text-align: left; }
+      .gallery-head p { text-align: left !important; max-width: 100% !important; }
       .gallery-mosaic {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: 200px 200px 200px;
+        grid-template-rows: 220px 200px 200px;
+        gap: 3px;
       }
       .gm.tall { grid-column: 1 / 3; grid-row: 1; }
 
@@ -682,10 +712,47 @@
       .ft-links { justify-content: center; }
     }
 
+    /* ── extra-small phones — max 400px ── */
+    @media (max-width: 400px) {
+      .nav-logo { font-size: 11px; letter-spacing: 2px; }
+      .hero-content { padding: 0 18px; }
+      .hero-h1 { font-size: clamp(34px, 10.5vw, 52px); }
+      .hero-tag span { font-size: 7px; letter-spacing: 2px; }
+      .h-stat-num { font-size: 26px; }
+      .h-stat-label { font-size: 6px; letter-spacing: 1.5px; }
+      .btn-ink, .btn-outline { padding: 13px 28px; font-size: 8px; }
+      .overview, .amenities-section, .concierge-section, .pricing-section { padding-left: 18px; padding-right: 18px; }
+      .am-grid { grid-template-columns: repeat(2, 1fr); }
+      .loc-cards { grid-template-columns: 1fr; }
+      .loc-strip { grid-template-columns: 1fr 1fr; }
+      .ft-logo { font-size: 12px; letter-spacing: 3px; }
+      .rera-val { font-size: 8px; }
+    }
+
+    /* ── landscape phones — short height ── */
+    @media (max-width: 900px) and (max-height: 500px) and (orientation: landscape) {
+      .hero { min-height: 480px; height: auto; padding: 100px 0 60px; }
+      .hero-stats { margin-bottom: 24px; }
+      .scroll-hint { display: none; }
+    }
+
     /* tablet — 769–1024 */
     @media (min-width: 769px) and (max-width: 1024px) {
       nav { padding: 24px 40px; }
       nav.scrolled { padding: 16px 40px; }
+      /* switch to hamburger — full horizontal nav doesn't fit beside the logo */
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; margin-left: 16px; flex-shrink: 0; }
+      .nav-drawer { display: flex; }
+      /* strengthen hero so text stays legible over the photo */
+      .hero-overlay {
+        background:
+          linear-gradient(to top, rgba(250,247,242,.99) 0%, rgba(250,247,242,.9) 34%, rgba(250,247,242,.58) 60%, rgba(250,247,242,.25) 82%, transparent 100%),
+          linear-gradient(to bottom, rgba(250,247,242,.65) 0%, transparent 20%);
+      }
+      .hero-tag span { text-shadow: 0 1px 12px rgba(250,247,242,.9); }
+      .hero-h1 { text-shadow: 0 2px 22px rgba(250,247,242,.7); }
+      .hero-sub { color: rgba(26,20,16,.8); text-shadow: 0 1px 10px rgba(250,247,242,.8); }
       .overview { padding: 100px 48px; }
       .overview-inner { gap: 60px; }
       .ov-accent { display: none; }
