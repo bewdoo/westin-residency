@@ -586,26 +586,37 @@
     .cf-status.err { color: #b3261e; }
     .cf-grp input.invalid, .cf-grp select.invalid { border-bottom-color: #b3261e; }
 
-    /* ── RERA ── */
-    .rera {
-      background: var(--ink); padding: 20px 80px;
-      display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap;
-    }
-    .rera-lbl { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,.3); }
-    .rera-val { font-size: 9px; color: rgba(255,255,255,.18); letter-spacing: .5px; }
-    .rera-sep { width: 1px; height: 12px; background: rgba(255,255,255,.07); }
-
     /* ── FOOTER ── */
-    footer {
-      background: var(--cream); padding: 44px 80px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-top: 1px solid rgba(154,123,63,.14); gap: 20px; flex-wrap: wrap;
+    .site-footer { background: var(--ink); color: rgba(255,255,255,.6); }
+    .ft-grid {
+      display: grid; grid-template-columns: 1fr 1.05fr; gap: 80px;
+      padding: 80px 80px 56px;
     }
-    .ft-logo { font-family: 'Cormorant Garamond', serif; font-size: 14px; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); }
-    .ft-copy { font-size: 9px; color: var(--muted2); letter-spacing: .5px; }
-    .ft-links { display: flex; gap: 28px; }
-    .ft-links a { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted2); text-decoration: none; transition: color .3s; }
-    .ft-links a:hover { color: var(--gold); }
+    .ft-eyebrow { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold-l); margin-bottom: 26px; }
+    .ft-dev-logo { font-family: 'Cormorant Garamond', serif; font-size: 30px; letter-spacing: 6px; color: var(--white); line-height: 1; }
+    .ft-dev-sub { font-size: 7px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-top: 6px; }
+    .ft-blurb { font-size: 12px; line-height: 1.9; color: rgba(255,255,255,.5); margin-top: 28px; max-width: 420px; }
+    .ft-links { display: flex; flex-wrap: wrap; gap: 14px 28px; margin-top: 32px; }
+    .ft-links a { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,.55); text-decoration: none; transition: color .3s; }
+    .ft-links a:hover { color: var(--gold-l); }
+    .ft-harera { margin-top: 28px; font-size: 9px; letter-spacing: 1.5px; color: rgba(255,255,255,.35); }
+    .ft-harera a { color: var(--gold-l); text-decoration: none; }
+
+    .ft-legal-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.85); margin-top: 22px; margin-bottom: 6px; }
+    .ft-legal-label:first-of-type { margin-top: 0; }
+    .ft-legal-text { font-size: 12px; line-height: 1.85; color: rgba(255,255,255,.5); }
+    .ft-rera-nums { font-size: 12px; line-height: 2; color: rgba(255,255,255,.6); font-family: 'Cormorant Garamond', serif; letter-spacing: .5px; }
+    .ft-disclaimer { font-size: 11px; line-height: 1.9; color: rgba(255,255,255,.4); margin-top: 22px; }
+
+    .ft-bottom {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 24px 80px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    }
+    .ft-copy { font-size: 10px; letter-spacing: .4px; color: rgba(255,255,255,.4); line-height: 1.7; max-width: 70%; }
+    .ft-bottom-links { display: flex; gap: 22px; flex-shrink: 0; }
+    .ft-bottom-links a { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.5); text-decoration: none; transition: color .3s; white-space: nowrap; }
+    .ft-bottom-links a:hover { color: var(--gold-l); }
 
     /* ── REVEAL ── */
     [data-r] { opacity: 0; transition: opacity .85s ease, transform .85s cubic-bezier(.16,1,.3,1); }
@@ -742,11 +753,11 @@
       .con-form-wrap { padding: 64px 24px; }
       .cf-row { grid-template-columns: 1fr; }
 
-      /* rera / footer */
-      .rera { padding: 18px 24px; flex-direction: column; gap: 8px; text-align: center; }
-      .rera-sep { display: none; }
-      footer { padding: 36px 24px; flex-direction: column; text-align: center; gap: 16px; }
-      .ft-links { justify-content: center; }
+      /* footer */
+      .ft-grid { grid-template-columns: 1fr; gap: 48px; padding: 56px 24px 40px; }
+      .ft-blurb { max-width: 100%; }
+      .ft-bottom { padding: 22px 24px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .ft-copy { max-width: 100%; }
     }
 
     /* ── extra-small phones — max 400px ── */
@@ -762,8 +773,7 @@
       .am-grid { grid-template-columns: repeat(2, 1fr); }
       .loc-cards { grid-template-columns: 1fr; }
       .loc-strip { grid-template-columns: 1fr 1fr; }
-      .ft-logo { font-size: 12px; letter-spacing: 3px; }
-      .rera-val { font-size: 8px; }
+      .ft-dev-logo { font-size: 26px; letter-spacing: 4px; }
     }
 
     /* ── landscape phones — short height ── */
@@ -805,8 +815,8 @@
       .contact-section { grid-template-columns: 1fr; }
       .con-vis { display: none; }
       .con-form-wrap { padding: 72px 48px; }
-      footer { padding: 40px 48px; }
-      .rera { padding: 20px 48px; }
+      .ft-grid { gap: 56px; padding: 64px 48px 44px; }
+      .ft-bottom { padding: 22px 48px; }
     }
   </style>
 </head>
@@ -1230,26 +1240,56 @@
   </div>
 </section>
 
-<!-- RERA -->
-<div class="rera">
-  <span class="rera-lbl">RERA</span>
-  <span class="rera-val">RC/REP/HARERA/GGM/838/570/2024/65</span>
-  <span class="rera-sep"></span>
-  <span class="rera-val">RC/REP/HARERA/GGM/839/571/2024/66</span>
-  <span class="rera-sep"></span>
-  <span class="rera-val">RC/REP/HARERA/GGM/840/572/2024/67</span>
-  <span class="rera-sep"></span>
-  <span class="rera-val">RC/REP/HARERA/GGM/949/681/2025/52</span>
-</div>
-
 <!-- FOOTER -->
-<footer>
-  <div class="ft-logo">The Westin Residences</div>
-  <div class="ft-copy">© 2026 Whiteland Corporation. All rights reserved.</div>
-  <div class="ft-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#contact">Contact</a>
+<footer class="site-footer">
+  <div class="ft-grid">
+
+    <!-- LEFT: Developer -->
+    <div>
+      <p class="ft-eyebrow">Developed By</p>
+      <div class="ft-dev-logo">WHITELAND</div>
+      <div class="ft-dev-sub">Authorised Channel Partner</div>
+      <p class="ft-blurb">Whiteland Corporation is a leading real estate developer focused on delivering premium residential and mixed-use developments in Gurugram.</p>
+      <div class="ft-links">
+        <a href="#location">Masterplan &amp; Location</a>
+        <a href="#pricing">Residences</a>
+        <a href="#amenities">Clubhouse &amp; Amenities</a>
+        <a href="#overview">The ONVIA Club</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <p class="ft-harera">HARERA NO.: 65, 66, 67 &amp; 52 &nbsp;|&nbsp; WEBSITE: <a href="https://haryanarera.gov.in" target="_blank" rel="noopener">HARYANARERA.GOV.IN</a></p>
+    </div>
+
+    <!-- RIGHT: RERA & Legal -->
+    <div>
+      <p class="ft-eyebrow">RERA &amp; Legal Disclaimer</p>
+      <p class="ft-legal-label">Project Name:</p>
+      <p class="ft-legal-text">URBAN RESORT</p>
+
+      <p class="ft-legal-label">Promoter's Name:</p>
+      <p class="ft-legal-text">WHITELAND CORPORATION PVT. LTD.</p>
+      <p class="ft-legal-text" style="margin-top:8px;">Whiteland Corporation Pvt. Ltd. is the Promoter of the luxury residential development being developed at Sector 103, Gurugram, Haryana.</p>
+
+      <p class="ft-legal-label">Project RERA Registration Numbers:</p>
+      <div class="ft-rera-nums">
+        RC/REP/HARERA/GGM/838/570/2024/65 &nbsp;DATED: 18.06.2024<br>
+        RC/REP/HARERA/GGM/839/571/2024/66 &nbsp;DATED: 18.06.2024<br>
+        RC/REP/HARERA/GGM/840/572/2024/67 &nbsp;DATED: 18.06.2024<br>
+        RC/REP/HARERA/GGM/949/681/2025/52 &nbsp;DATED: 16.05.2025
+      </div>
+
+      <p class="ft-disclaimer">All information, images, renders and artistic impressions are for illustrative purposes only. Nothing herein constitutes a legal offer or contract. Prospective purchasers are advised to independently verify all details before making any purchase decision. Terms &amp; Conditions Apply.</p>
+    </div>
+
+  </div>
+
+  <div class="ft-bottom">
+    <div class="ft-copy">© 2026 WELLSOLVE CORP PRIVATE LIMITED (Realty Unplugged) — Authorized Marketing Partner for Whiteland Corporation. All Rights Reserved.</div>
+    <div class="ft-bottom-links">
+      <a href="about.html">About Us</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms &amp; Conditions</a>
+    </div>
   </div>
 </footer>
 
