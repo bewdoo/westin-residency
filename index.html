@@ -8,6 +8,40 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       ANALYTICS & ADS TRACKING  —  ⚠ REPLACE THE PLACEHOLDER IDs BEFORE GO-LIVE
+       Find-and-replace these tokens across this file, then re-deploy:
+         META_PIXEL_ID         → your Meta Pixel ID            (Events Manager, e.g. 123456789012345)
+         AW_CONVERSION_ID      → your Google Ads ID            (e.g. AW-1234567890)
+         AW_CONVERSION_LABEL   → your Google Ads conversion label (e.g. AbC-D_efGh)
+         GA4_MEASUREMENT_ID    → your GA4 ID (OPTIONAL)        (e.g. G-XXXXXXXXXX — delete the GA4 lines if unused)
+       Until replaced these load harmlessly (no data is sent anywhere real).
+  ═══════════════════════════════════════════════════════════════════════ -->
+
+  <!-- Meta (Facebook) Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'META_PIXEL_ID');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1" alt="" /></noscript>
+
+  <!-- Google Ads + GA4 (single gtag.js load handles both) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW_CONVERSION_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'AW_CONVERSION_ID');     // Google Ads (conversions + GCLID)
+    gtag('config', 'GA4_MEASUREMENT_ID');   // GA4 — OPTIONAL, delete this line if not using GA4
+  </script>
+
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -548,6 +582,11 @@
       cursor: pointer; transition: background .35s;
     }
     .cf-submit:hover { background: var(--gold); }
+    .cf-submit:disabled { opacity: .55; cursor: not-allowed; background: var(--ink); }
+    .cf-status { margin-top: 16px; font-size: 11px; letter-spacing: .4px; line-height: 1.7; min-height: 1em; }
+    .cf-status.ok  { color: #2f7d4f; }
+    .cf-status.err { color: #b3261e; }
+    .cf-grp input.invalid, .cf-grp select.invalid { border-bottom-color: #b3261e; }
 
     /* ── RERA ── */
     .rera {
@@ -1165,16 +1204,31 @@
       </div>
     </div>
     <p class="cf-title">Request a Private Viewing</p>
-    <div class="cf-row">
-      <div class="cf-grp"><input type="text" placeholder="First Name" /></div>
-      <div class="cf-grp"><input type="text" placeholder="Last Name" /></div>
-    </div>
-    <div class="cf-grp"><input type="tel" placeholder="Phone Number" /></div>
-    <div class="cf-grp"><input type="email" placeholder="Email Address" /></div>
-    <div class="cf-grp">
-      <select><option value="">Select Residence Type</option><option>3 BHK Residence</option><option>4 BHK Residence</option><option>Penthouse</option></select>
-    </div>
-    <button class="cf-submit">Request Private Viewing &nbsp;→</button>
+    <form id="leadForm" novalidate>
+      <div class="cf-row">
+        <div class="cf-grp"><input type="text" name="firstName" placeholder="First Name" required autocomplete="given-name" /></div>
+        <div class="cf-grp"><input type="text" name="lastName" placeholder="Last Name" autocomplete="family-name" /></div>
+      </div>
+      <div class="cf-grp"><input type="tel" name="phone" placeholder="Phone Number" required autocomplete="tel" inputmode="tel" /></div>
+      <div class="cf-grp"><input type="email" name="email" placeholder="Email Address" required autocomplete="email" inputmode="email" /></div>
+      <div class="cf-grp">
+        <select name="residenceType" required><option value="">Select Residence Type</option><option>3 BHK Residence</option><option>4 BHK Residence</option><option>Penthouse</option></select>
+      </div>
+      <!-- honeypot: hidden from people, catches bots -->
+      <input type="text" name="company" id="hpField" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+      <!-- attribution (auto-filled by JS) -->
+      <input type="hidden" name="gclid" />
+      <input type="hidden" name="fbclid" />
+      <input type="hidden" name="utm_source" />
+      <input type="hidden" name="utm_medium" />
+      <input type="hidden" name="utm_campaign" />
+      <input type="hidden" name="utm_term" />
+      <input type="hidden" name="utm_content" />
+      <input type="hidden" name="page_url" />
+      <input type="hidden" name="referrer" />
+      <button type="submit" class="cf-submit" id="leadSubmit">Request Private Viewing &nbsp;→</button>
+      <p class="cf-status" id="leadStatus" role="status" aria-live="polite"></p>
+    </form>
   </div>
 </section>
 
@@ -1240,6 +1294,83 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); ro.unobserve(e.target); } });
   }, { threshold: 0.1 });
   revEls.forEach(el => ro.observe(el));
+
+  // ═══════════════════════════════════════════════════════════════
+  //  LEAD FORM  ·  ATTRIBUTION (GCLID/FBCLID/UTM)  ·  CONVERSIONS
+  // ═══════════════════════════════════════════════════════════════
+
+  // ⚠ PASTE your Google Apps Script Web App URL here (see SETUP-LEADS.md)
+  const LEAD_ENDPOINT = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL';
+  // ⚠ Google Ads conversion target — replace both tokens (same as in <head>)
+  const AW_SEND_TO = 'AW_CONVERSION_ID/AW_CONVERSION_LABEL';
+
+  // 1) Capture click IDs + UTM params from the URL and persist them (90 days).
+  //    This lets us attribute a lead to the ad/click that first brought the visitor,
+  //    even if they navigate around or come back later.
+  const ATTR_KEYS = ['gclid','fbclid','utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+  (function captureAttribution() {
+    const params = new URLSearchParams(location.search);
+    const store = JSON.parse(localStorage.getItem('wr_attrib') || '{}');
+    let changed = false;
+    ATTR_KEYS.forEach(k => { const v = params.get(k); if (v) { store[k] = v; changed = true; } });
+    if (changed) { store._ts = Date.now(); localStorage.setItem('wr_attrib', JSON.stringify(store)); }
+    if (store._ts && Date.now() - store._ts > 90 * 24 * 60 * 60 * 1000) localStorage.removeItem('wr_attrib');
+  })();
+  const getAttribution = () => JSON.parse(localStorage.getItem('wr_attrib') || '{}');
+
+  // 2) Wire up the form
+  const leadForm = document.getElementById('leadForm');
+  if (leadForm) {
+    const statusEl  = document.getElementById('leadStatus');
+    const submitBtn = document.getElementById('leadSubmit');
+
+    const fillHidden = () => {
+      const attr = getAttribution();
+      ATTR_KEYS.forEach(k => { if (leadForm.elements[k]) leadForm.elements[k].value = attr[k] || ''; });
+      leadForm.elements['page_url'].value = location.href;
+      leadForm.elements['referrer'].value = document.referrer || '';
+    };
+    fillHidden();
+
+    const setStatus = (msg, cls) => { statusEl.textContent = msg; statusEl.className = 'cf-status' + (cls ? ' ' + cls : ''); };
+
+    leadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (leadForm.elements['company'].value) return;          // honeypot → silently ignore bots
+
+      // validate required fields
+      let ok = true;
+      [['firstName',v=>!!v.trim()], ['phone',v=>v.replace(/\D/g,'').length>=7],
+       ['email',v=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)], ['residenceType',v=>!!v]]
+      .forEach(([n, test]) => { const f = leadForm.elements[n]; const bad = !test(f.value); f.classList.toggle('invalid', bad); if (bad) ok = false; });
+      if (!ok) { setStatus('Please complete all required fields with a valid email and phone.', 'err'); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+      setStatus('', '');
+
+      const payload = new URLSearchParams(new FormData(leadForm));
+      try {
+        await fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: payload });
+        fireLeadConversions(Object.fromEntries(payload));
+        leadForm.reset();
+        fillHidden();
+        setStatus('Thank you — your request has been received. Our team will contact you shortly.', 'ok');
+        submitBtn.textContent = 'Request Sent ✓';
+      } catch (err) {
+        setStatus('Something went wrong. Please call +91 7303 888 722 or try again.', 'err');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Request Private Viewing &nbsp;→';
+      }
+    });
+  }
+
+  // 3) Fire conversion pixels/events after a successful submit
+  function fireLeadConversions(data) {
+    try { if (window.fbq)  fbq('track', 'Lead', { content_name: data.residenceType || 'Residence Enquiry' }); } catch (e) {}
+    try { if (window.gtag) gtag('event', 'conversion', { send_to: AW_SEND_TO }); } catch (e) {}   // Google Ads
+    try { if (window.gtag) gtag('event', 'generate_lead', { currency: 'INR', value: 0 }); } catch (e) {} // GA4
+  }
 </script>
 </body>
 </html>
