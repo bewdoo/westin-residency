@@ -192,13 +192,14 @@
     .hero img {
       position: absolute; inset: 0; width: 100%; height: 100%;
       object-fit: cover; object-position: center;
+      filter: saturate(.82) contrast(.9) brightness(1.04);
     }
     .hero-overlay {
       position: absolute; inset: 0;
       background:
-        radial-gradient(115% 80% at 50% 56%, rgba(250,247,242,.72) 0%, rgba(250,247,242,.4) 42%, rgba(250,247,242,.1) 72%, transparent 100%),
-        linear-gradient(to top, rgba(250,247,242,.95) 0%, rgba(250,247,242,.62) 32%, rgba(250,247,242,.3) 62%, rgba(250,247,242,.12) 100%),
-        linear-gradient(to bottom, rgba(250,247,242,.5) 0%, transparent 20%);
+        radial-gradient(125% 85% at 50% 50%, rgba(250,247,242,.92) 0%, rgba(250,247,242,.66) 38%, rgba(250,247,242,.26) 70%, transparent 100%),
+        linear-gradient(to top, rgba(250,247,242,.97) 0%, rgba(250,247,242,.74) 34%, rgba(250,247,242,.46) 62%, rgba(250,247,242,.2) 100%),
+        linear-gradient(to bottom, rgba(250,247,242,.55) 0%, transparent 20%);
     }
     /* luxe gold frame around the hero */
     .hero::after {
@@ -217,8 +218,8 @@
     }
     .hero-tag-line { width: 40px; height: 1px; background: var(--gold); flex-shrink: 0; }
     .hero-tag span {
-      font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold);
-      font-weight: 500; text-shadow: 0 1px 12px rgba(250,247,242,.9), 0 0 2px rgba(250,247,242,.6);
+      font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #7a5d2b;
+      font-weight: 600; text-shadow: 0 1px 12px rgba(250,247,242,1), 0 0 3px rgba(250,247,242,.9);
     }
     .hero-h1 {
       font-family: 'Cormorant Garamond', serif;
@@ -751,10 +752,11 @@
       .hero-content { padding: 0 24px; }
       .hero-overlay {
         background:
-          linear-gradient(to top, rgba(250,247,242,.99) 0%, rgba(250,247,242,.92) 32%, rgba(250,247,242,.6) 58%, rgba(250,247,242,.3) 80%, rgba(250,247,242,.12) 100%),
-          linear-gradient(to bottom, rgba(250,247,242,.7) 0%, transparent 22%);
+          radial-gradient(125% 58% at 50% 45%, rgba(250,247,242,.92) 0%, rgba(250,247,242,.64) 44%, rgba(250,247,242,.22) 75%, transparent 100%),
+          linear-gradient(to top, rgba(250,247,242,.99) 0%, rgba(250,247,242,.95) 30%, rgba(250,247,242,.82) 54%, rgba(250,247,242,.52) 76%, rgba(250,247,242,.22) 100%),
+          linear-gradient(to bottom, rgba(250,247,242,.72) 0%, transparent 22%);
       }
-      .hero-tag span { text-shadow: 0 1px 12px rgba(250,247,242,.9); }
+      .hero-tag span { text-shadow: 0 1px 12px rgba(250,247,242,1); }
       .hero-h1 { text-shadow: 0 2px 20px rgba(250,247,242,.7); }
       .hero-sub { color: rgba(26,20,16,.8); text-shadow: 0 1px 10px rgba(250,247,242,.8); }
       .hero-tag { gap: 8px; margin-bottom: 18px; padding: 0 4px; flex-wrap: nowrap; }
@@ -880,10 +882,11 @@
       /* strengthen hero so text stays legible over the photo */
       .hero-overlay {
         background:
-          linear-gradient(to top, rgba(250,247,242,.99) 0%, rgba(250,247,242,.9) 34%, rgba(250,247,242,.58) 60%, rgba(250,247,242,.25) 82%, transparent 100%),
+          radial-gradient(120% 70% at 50% 48%, rgba(250,247,242,.88) 0%, rgba(250,247,242,.58) 42%, rgba(250,247,242,.22) 74%, transparent 100%),
+          linear-gradient(to top, rgba(250,247,242,.99) 0%, rgba(250,247,242,.92) 34%, rgba(250,247,242,.7) 60%, rgba(250,247,242,.34) 82%, transparent 100%),
           linear-gradient(to bottom, rgba(250,247,242,.65) 0%, transparent 20%);
       }
-      .hero-tag span { text-shadow: 0 1px 12px rgba(250,247,242,.9); }
+      .hero-tag span { text-shadow: 0 1px 12px rgba(250,247,242,1); }
       .hero-h1 { text-shadow: 0 2px 22px rgba(250,247,242,.7); }
       .hero-sub { color: rgba(26,20,16,.8); text-shadow: 0 1px 10px rgba(250,247,242,.8); }
       .overview { padding: 100px 48px; }
