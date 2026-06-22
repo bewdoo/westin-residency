@@ -10,13 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
 
   <!-- ═══════════════════════════════════════════════════════════════════════
-       ANALYTICS & ADS TRACKING  —  ⚠ REPLACE THE PLACEHOLDER IDs BEFORE GO-LIVE
-       Find-and-replace these tokens across this file, then re-deploy:
-         META_PIXEL_ID         → your Meta Pixel ID            (Events Manager, e.g. 123456789012345)
-         AW_CONVERSION_ID      → your Google Ads ID            (e.g. AW-1234567890)
-         AW_CONVERSION_LABEL   → your Google Ads conversion label (e.g. AbC-D_efGh)
-         GA4_MEASUREMENT_ID    → your GA4 ID (OPTIONAL)        (e.g. G-XXXXXXXXXX — delete the GA4 lines if unused)
-       Until replaced these load harmlessly (no data is sent anywhere real).
+       ANALYTICS & ADS TRACKING  (configured)
+         Meta Pixel ID:         3520075144822718
+         Google Ads ID:         AW-18255960860
+         Google Ads conv label: IU-oCIL-sMMcEJy2j4FE
+         GA4:                   not used
+       Lead form endpoint is set in the LEAD_ENDPOINT constant near the bottom.
   ═══════════════════════════════════════════════════════════════════════ -->
 
   <!-- Meta (Facebook) Pixel -->
@@ -26,20 +25,19 @@
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
     document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', 'META_PIXEL_ID');
+    fbq('init', '3520075144822718');
     fbq('track', 'PageView');
   </script>
   <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1" alt="" /></noscript>
+    src="https://www.facebook.com/tr?id=3520075144822718&ev=PageView&noscript=1" alt="" /></noscript>
 
   <!-- Google Ads + GA4 (single gtag.js load handles both) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW_CONVERSION_ID"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18255960860"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', 'AW_CONVERSION_ID');     // Google Ads (conversions + GCLID)
-    gtag('config', 'GA4_MEASUREMENT_ID');   // GA4 — OPTIONAL, delete this line if not using GA4
+    gtag('config', 'AW-18255960860');     // Google Ads (conversions + GCLID)
   </script>
 
   <style>
@@ -1300,9 +1298,9 @@
   // ═══════════════════════════════════════════════════════════════
 
   // ⚠ PASTE your Google Apps Script Web App URL here (see SETUP-LEADS.md)
-  const LEAD_ENDPOINT = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL';
+  const LEAD_ENDPOINT = 'https://script.google.com/macros/s/AKfycbySDmQkuk1Tw6aQG2bZsRvJet82Yf9vmeNYnHyE3NdOHfHYo6dVZJ9f-jzIAV5ckd-WTQ/exec';
   // ⚠ Google Ads conversion target — replace both tokens (same as in <head>)
-  const AW_SEND_TO = 'AW_CONVERSION_ID/AW_CONVERSION_LABEL';
+  const AW_SEND_TO = 'AW-18255960860/IU-oCIL-sMMcEJy2j4FE';
 
   // 1) Capture click IDs + UTM params from the URL and persist them (90 days).
   //    This lets us attribute a lead to the ad/click that first brought the visitor,
