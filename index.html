@@ -1257,7 +1257,7 @@
         <select name="residenceType" required><option value="">Select Residence Type</option><option>3 BHK Residence</option><option>4 BHK Residence</option><option>Penthouse</option></select>
       </div>
       <!-- honeypot: hidden from people, catches bots -->
-      <input type="text" name="company" id="hpField" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+      <input type="text" name="hp_ref_8821" id="hpField" tabindex="-1" autocomplete="off" aria-hidden="true" data-lpignore="true" data-1p-ignore data-form-type="other" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
       <!-- attribution (auto-filled by JS) -->
       <input type="hidden" name="gclid" />
       <input type="hidden" name="fbclid" />
@@ -1298,7 +1298,7 @@
         <div class="cf-grp">
           <select name="residenceType" required><option value="">Select Residence Type</option><option>3 BHK Residence</option><option>4 BHK Residence</option><option>Penthouse</option></select>
         </div>
-        <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+        <input type="text" name="hp_ref_8821" tabindex="-1" autocomplete="off" aria-hidden="true" data-lpignore="true" data-1p-ignore data-form-type="other" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
         <input type="hidden" name="lastName" />
         <input type="hidden" name="gclid" />
         <input type="hidden" name="fbclid" />
@@ -1487,7 +1487,7 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (form.elements['company'] && form.elements['company'].value) return;   // honeypot
+      if (form.elements['hp_ref_8821'] && form.elements['hp_ref_8821'].value) return;   // honeypot
 
       let ok = true;
       [['firstName',v=>!!v.trim()], ['phone',v=>v.replace(/\D/g,'').length>=7],
