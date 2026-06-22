@@ -20,6 +20,13 @@
 var NOTIFY_EMAIL = 'unplugged.realty11@gmail.com';   // leads are emailed here
 var SHEET_NAME   = 'Leads';
 
+// Force a value to be stored as TEXT so Sheets doesn't treat "+91…" / "=" / "-" / "@"
+// as a formula (which causes #ERROR!). Also blocks CSV/formula injection.
+function safe(v) {
+  v = (v == null ? '' : String(v));
+  return /^[=+\-@]/.test(v) ? "'" + v : v;
+}
+
 function doPost(e) {
   try {
     var p  = (e && e.parameter) ? e.parameter : {};
@@ -37,9 +44,9 @@ function doPost(e) {
 
     sheet.appendRow([
       new Date(),
-      p.firstName || '', p.lastName || '', p.phone || '', p.email || '', p.residenceType || '',
-      p.gclid || '', p.fbclid || '', p.utm_source || '', p.utm_medium || '', p.utm_campaign || '',
-      p.utm_term || '', p.utm_content || '', p.page_url || '', p.referrer || ''
+      safe(p.firstName), safe(p.lastName), safe(p.phone), safe(p.email), safe(p.residenceType),
+      safe(p.gclid), safe(p.fbclid), safe(p.utm_source), safe(p.utm_medium), safe(p.utm_campaign),
+      safe(p.utm_term), safe(p.utm_content), safe(p.page_url), safe(p.referrer)
     ]);
 
     var subject = 'New Westin Residences Lead — ' + (p.firstName || '') + ' ' + (p.lastName || '');
