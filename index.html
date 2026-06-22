@@ -585,6 +585,9 @@
     .cf-status.ok  { color: #2f7d4f; }
     .cf-status.err { color: #b3261e; }
     .cf-grp input.invalid, .cf-grp select.invalid { border-bottom-color: #b3261e; }
+    .cf-consent { margin-top: 14px; font-size: 10px; line-height: 1.7; letter-spacing: .3px; color: rgba(26,20,16,.5); }
+    .cf-consent a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(154,123,63,.35); transition: color .3s; }
+    .cf-consent a:hover { color: var(--ink); }
 
     /* ── FOOTER ── */
     .site-footer { background: var(--ink); color: rgba(255,255,255,.6); }
@@ -1235,6 +1238,7 @@
       <input type="hidden" name="page_url" />
       <input type="hidden" name="referrer" />
       <button type="submit" class="cf-submit" id="leadSubmit">Request Private Viewing &nbsp;→</button>
+      <p class="cf-consent">By submitting this form, you agree to be contacted regarding your enquiry and accept our <a href="privacy.html">Privacy Policy</a> &amp; <a href="terms.html">Terms &amp; Conditions</a>.</p>
       <p class="cf-status" id="leadStatus" role="status" aria-live="polite"></p>
     </form>
   </div>
