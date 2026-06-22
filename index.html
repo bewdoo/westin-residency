@@ -558,36 +558,91 @@
     .cd-icon svg { width: 18px; height: 18px; stroke: var(--gold); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .cd-label { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 2px; }
     .cd-val { font-size: 12px; color: var(--muted); }
-    .cf-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; margin-bottom: 28px; color: var(--ink); }
-    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 3px; }
-    .cf-grp { margin-bottom: 3px; }
+    .cf-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; margin-bottom: 8px; color: var(--ink); }
+    .cf-title + .cf-rule { width: 40px; height: 1px; background: var(--gold); margin-bottom: 26px; }
+    .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .cf-grp { margin-bottom: 10px; }
     .cf-grp input, .cf-grp select, .cf-grp textarea {
-      width: 100%; background: var(--white); border: none;
-      border-bottom: 1px solid rgba(26,20,16,.1);
-      color: var(--ink); padding: 16px 0;
-      font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 300;
-      outline: none; transition: border-color .35s;
+      width: 100%; background-color: rgba(255,255,255,.55);
+      border: 1px solid rgba(154,123,63,.22);
+      color: var(--ink); padding: 15px 18px;
+      font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: .4px;
+      outline: none; transition: border-color .35s, background-color .35s, box-shadow .35s;
     }
-    .cf-grp input::placeholder, .cf-grp textarea::placeholder { color: rgba(26,20,16,.28); font-size: 11px; letter-spacing: 1px; }
-    .cf-grp input:focus, .cf-grp select:focus, .cf-grp textarea:focus { border-bottom-color: var(--gold); }
-    .cf-grp select { appearance: none; cursor: pointer; }
+    .cf-grp input::placeholder, .cf-grp textarea::placeholder { color: rgba(26,20,16,.32); font-size: 11px; letter-spacing: 1px; }
+    .cf-grp input:focus, .cf-grp select:focus, .cf-grp textarea:focus {
+      border-color: var(--gold); background-color: var(--white);
+      box-shadow: 0 8px 26px rgba(154,123,63,.13);
+    }
+    .cf-grp select {
+      appearance: none; cursor: pointer; padding-right: 42px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239A7B3F' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 16px center; background-size: 13px;
+    }
     .cf-grp select option { background: var(--white); }
     .cf-submit {
-      width: 100%; padding: 18px; margin-top: 24px;
+      width: 100%; padding: 18px; margin-top: 20px;
       background: var(--ink); color: var(--white); border: none;
       font-family: 'Montserrat', sans-serif; font-size: 10px;
       letter-spacing: 4px; text-transform: uppercase; font-weight: 600;
-      cursor: pointer; transition: background .35s;
+      cursor: pointer; transition: background .4s, letter-spacing .4s, box-shadow .4s;
     }
-    .cf-submit:hover { background: var(--gold); }
-    .cf-submit:disabled { opacity: .55; cursor: not-allowed; background: var(--ink); }
+    .cf-submit:hover { background: var(--gold); letter-spacing: 5px; box-shadow: 0 14px 34px rgba(154,123,63,.28); }
+    .cf-submit:disabled { opacity: .55; cursor: not-allowed; background: var(--ink); letter-spacing: 4px; box-shadow: none; }
     .cf-status { margin-top: 16px; font-size: 11px; letter-spacing: .4px; line-height: 1.7; min-height: 1em; }
     .cf-status.ok  { color: #2f7d4f; }
     .cf-status.err { color: #b3261e; }
-    .cf-grp input.invalid, .cf-grp select.invalid { border-bottom-color: #b3261e; }
+    .cf-grp input.invalid, .cf-grp select.invalid { border-color: #b3261e; }
     .cf-consent { margin-top: 14px; font-size: 10px; line-height: 1.7; letter-spacing: .3px; color: rgba(26,20,16,.5); }
     .cf-consent a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(154,123,63,.35); transition: color .3s; }
     .cf-consent a:hover { color: var(--ink); }
+
+    /* ── TIME-BASED POPUP ── */
+    .lead-popup {
+      position: fixed; inset: 0; z-index: 9000;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      background: rgba(20,15,10,.55); backdrop-filter: blur(7px);
+      opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility .5s;
+    }
+    .lead-popup.open { opacity: 1; visibility: visible; }
+    .lp-modal {
+      position: relative; display: grid; grid-template-columns: .82fr 1fr;
+      width: 100%; max-width: 860px; max-height: 92vh; overflow: hidden;
+      background: var(--cream); box-shadow: 0 50px 130px rgba(20,15,10,.55);
+      transform: translateY(34px) scale(.97); transition: transform .65s cubic-bezier(.16,1,.3,1);
+    }
+    .lead-popup.open .lp-modal { transform: translateY(0) scale(1); }
+    .lp-close {
+      position: absolute; top: 16px; right: 16px; z-index: 5;
+      width: 38px; height: 38px; border: none; cursor: pointer;
+      background: rgba(250,247,242,.9); color: var(--ink);
+      font-size: 20px; line-height: 1; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .3s, color .3s, transform .4s;
+    }
+    .lp-close:hover { background: var(--gold); color: var(--white); transform: rotate(90deg); }
+    .lp-visual { position: relative; overflow: hidden; }
+    .lp-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .lp-visual-ov { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,20,16,.72) 0%, rgba(26,20,16,.1) 55%, transparent 100%); }
+    .lp-visual-cap { position: absolute; bottom: 28px; left: 26px; right: 26px; display: flex; align-items: center; gap: 10px; }
+    .lp-visual-cap span { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-pale); line-height: 1.6; }
+    .lp-gem { width: 6px; height: 6px; background: var(--gold-l); transform: rotate(45deg); flex-shrink: 0; }
+    .lp-formside { padding: 48px 44px; overflow-y: auto; }
+    .lp-eyebrow { font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .lp-title { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 300; line-height: 1.06; color: var(--ink); }
+    .lp-title em { font-style: italic; color: var(--gold); }
+    .lp-sub { font-size: 12px; line-height: 1.8; color: var(--muted); margin: 16px 0 26px; }
+    @media (max-width: 640px) {
+      .lead-popup { padding: 16px; }
+      .lp-modal { grid-template-columns: 1fr; max-height: 90vh; }
+      .lp-visual { display: none; }
+      .lp-formside { padding: 52px 26px 36px; }
+      .lp-title { font-size: 32px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lp-modal { transition: none; transform: none; }
+      .lead-popup { transition: opacity .2s; }
+    }
 
     /* ── FOOTER ── */
     .site-footer { background: var(--ink); color: rgba(255,255,255,.6); }
@@ -1215,6 +1270,7 @@
       </div>
     </div>
     <p class="cf-title">Request a Private Viewing</p>
+    <div class="cf-rule"></div>
     <form id="leadForm" novalidate>
       <div class="cf-row">
         <div class="cf-grp"><input type="text" name="firstName" placeholder="First Name" required autocomplete="given-name" /></div>
@@ -1243,6 +1299,48 @@
     </form>
   </div>
 </section>
+
+<!-- TIME-BASED POPUP (opens after 15s, once per session) -->
+<div class="lead-popup" id="leadPopup" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Private viewing enquiry">
+  <div class="lp-modal">
+    <button class="lp-close" id="lpClose" aria-label="Close">&times;</button>
+    <div class="lp-visual">
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="The Westin Residences" />
+      <div class="lp-visual-ov"></div>
+      <div class="lp-visual-cap">
+        <span class="lp-gem"></span>
+        <span>India's First Westin-Operated Residences</span>
+      </div>
+    </div>
+    <div class="lp-formside">
+      <p class="lp-eyebrow">By Invitation</p>
+      <h3 class="lp-title">Experience the<br><em>Westin</em> Life</h3>
+      <p class="lp-sub">Register for a private, no-obligation viewing — and unlock priority access to floor plans &amp; pricing.</p>
+      <form id="popupForm" novalidate>
+        <div class="cf-grp"><input type="text" name="firstName" placeholder="Full Name" required autocomplete="name" /></div>
+        <div class="cf-grp"><input type="tel" name="phone" placeholder="Phone Number" required inputmode="tel" autocomplete="tel" /></div>
+        <div class="cf-grp"><input type="email" name="email" placeholder="Email Address" required inputmode="email" autocomplete="email" /></div>
+        <div class="cf-grp">
+          <select name="residenceType" required><option value="">Select Residence Type</option><option>3 BHK Residence</option><option>4 BHK Residence</option><option>Penthouse</option></select>
+        </div>
+        <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+        <input type="hidden" name="lastName" />
+        <input type="hidden" name="gclid" />
+        <input type="hidden" name="fbclid" />
+        <input type="hidden" name="utm_source" />
+        <input type="hidden" name="utm_medium" />
+        <input type="hidden" name="utm_campaign" />
+        <input type="hidden" name="utm_term" />
+        <input type="hidden" name="utm_content" />
+        <input type="hidden" name="page_url" />
+        <input type="hidden" name="referrer" />
+        <button type="submit" class="cf-submit">Request Private Viewing &nbsp;→</button>
+        <p class="cf-consent">By submitting, you accept our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> &amp; <a href="terms.html" target="_blank" rel="noopener">Terms</a>.</p>
+        <p class="cf-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer class="site-footer">
@@ -1360,49 +1458,52 @@
   })();
   const getAttribution = () => JSON.parse(localStorage.getItem('wr_attrib') || '{}');
 
-  // 2) Wire up the form
-  const leadForm = document.getElementById('leadForm');
-  if (leadForm) {
-    const statusEl  = document.getElementById('leadStatus');
-    const submitBtn = document.getElementById('leadSubmit');
+  // 2) Reusable form wiring — powers BOTH the main form and the 15s popup form
+  function wireLead(form, opts) {
+    if (!form) return;
+    opts = opts || {};
+    const statusEl  = form.querySelector('.cf-status');
+    const submitBtn = form.querySelector('.cf-submit');
+    const btnLabel  = submitBtn ? submitBtn.innerHTML : '';
 
     const fillHidden = () => {
       const attr = getAttribution();
-      ATTR_KEYS.forEach(k => { if (leadForm.elements[k]) leadForm.elements[k].value = attr[k] || ''; });
-      leadForm.elements['page_url'].value = location.href;
-      leadForm.elements['referrer'].value = document.referrer || '';
+      ATTR_KEYS.forEach(k => { if (form.elements[k]) form.elements[k].value = attr[k] || ''; });
+      if (form.elements['page_url']) form.elements['page_url'].value = location.href;
+      if (form.elements['referrer']) form.elements['referrer'].value = document.referrer || '';
     };
     fillHidden();
 
-    const setStatus = (msg, cls) => { statusEl.textContent = msg; statusEl.className = 'cf-status' + (cls ? ' ' + cls : ''); };
+    const setStatus = (msg, cls) => { if (statusEl) { statusEl.textContent = msg; statusEl.className = 'cf-status' + (cls ? ' ' + cls : ''); } };
 
-    leadForm.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (leadForm.elements['company'].value) return;          // honeypot → silently ignore bots
+      if (form.elements['company'] && form.elements['company'].value) return;   // honeypot
 
-      // validate required fields
       let ok = true;
       [['firstName',v=>!!v.trim()], ['phone',v=>v.replace(/\D/g,'').length>=7],
        ['email',v=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)], ['residenceType',v=>!!v]]
-      .forEach(([n, test]) => { const f = leadForm.elements[n]; const bad = !test(f.value); f.classList.toggle('invalid', bad); if (bad) ok = false; });
+      .forEach(([n, test]) => { const f = form.elements[n]; if (!f) return; const bad = !test(f.value); f.classList.toggle('invalid', bad); if (bad) ok = false; });
       if (!ok) { setStatus('Please complete all required fields with a valid email and phone.', 'err'); return; }
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending…';
       setStatus('', '');
 
-      const payload = new URLSearchParams(new FormData(leadForm));
+      const payload = new URLSearchParams(new FormData(form));
       try {
         await fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: payload });
         fireLeadConversions(Object.fromEntries(payload));
-        leadForm.reset();
+        try { localStorage.setItem('wr_lead_done', '1'); } catch (e) {}
+        form.reset();
         fillHidden();
         setStatus('Thank you — your request has been received. Our team will contact you shortly.', 'ok');
         submitBtn.textContent = 'Request Sent ✓';
+        if (typeof opts.onSuccess === 'function') opts.onSuccess();
       } catch (err) {
         setStatus('Something went wrong. Please call +91 7303 888 722 or try again.', 'err');
         submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Request Private Viewing &nbsp;→';
+        submitBtn.innerHTML = btnLabel;
       }
     });
   }
@@ -1412,6 +1513,43 @@
     try { if (window.fbq)  fbq('track', 'Lead', { content_name: data.residenceType || 'Residence Enquiry' }); } catch (e) {}
     try { if (window.gtag) gtag('event', 'conversion', { send_to: AW_SEND_TO }); } catch (e) {}   // Google Ads
     try { if (window.gtag) gtag('event', 'generate_lead', { currency: 'INR', value: 0 }); } catch (e) {} // GA4
+  }
+
+  // 4) Wire both forms
+  wireLead(document.getElementById('leadForm'));
+  const popup = document.getElementById('leadPopup');
+  wireLead(document.getElementById('popupForm'), { onSuccess: () => setTimeout(closePopup, 2600) });
+
+  // 5) Time-based popup — opens after 15s, once per session, never if a lead was already sent
+  const POPUP_DELAY = 15000;
+  function openPopup() {
+    if (!popup) return;
+    popup.classList.add('open');
+    popup.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    try { sessionStorage.setItem('wr_popup_seen', '1'); } catch (e) {}
+  }
+  function closePopup() {
+    if (!popup) return;
+    popup.classList.remove('open');
+    popup.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  if (popup) {
+    const seen = (() => { try { return sessionStorage.getItem('wr_popup_seen'); } catch (e) { return null; } })();
+    const done = (() => { try { return localStorage.getItem('wr_lead_done'); } catch (e) { return null; } })();
+    if (!seen && !done) {
+      setTimeout(() => {
+        // don't interrupt someone actively typing in the main form
+        const a = document.activeElement;
+        if (a && ['INPUT','SELECT','TEXTAREA'].includes(a.tagName)) return;
+        try { if (sessionStorage.getItem('wr_popup_seen') || localStorage.getItem('wr_lead_done')) return; } catch (e) {}
+        openPopup();
+      }, POPUP_DELAY);
+    }
+    document.getElementById('lpClose').addEventListener('click', closePopup);
+    popup.addEventListener('click', (e) => { if (e.target === popup) closePopup(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && popup.classList.contains('open')) closePopup(); });
   }
 </script>
 </body>
