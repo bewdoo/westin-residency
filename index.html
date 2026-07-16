@@ -1371,7 +1371,7 @@
   </div>
 </section>
 
-<!-- TIME-BASED POPUP (opens after 15s, once per session) -->
+<!-- TIME-BASED POPUP (opens after 5s, once per session) -->
 <div class="lead-popup" id="leadPopup" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Private viewing enquiry">
   <div class="lp-modal">
     <button class="lp-close" id="lpClose" aria-label="Close">&times;</button>
@@ -1636,8 +1636,8 @@
     try { if (window.gtag) gtag('event', 'phone_click', { transport_type: 'beacon' }); } catch (e) {}
   }));
 
-  // 5) Time-based popup — opens after 15s, once per session, never if a lead was already sent
-  const POPUP_DELAY = 15000;
+  // 5) Time-based popup — opens after 5s, once per session, never if a lead was already sent
+  const POPUP_DELAY = 5000;
   function openPopup() {
     if (!popup) return;
     popup.classList.add('open');
