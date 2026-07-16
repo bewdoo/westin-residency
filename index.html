@@ -264,6 +264,61 @@
       transition: all .35s; white-space: nowrap;
     }
     .btn-outline:hover { border-color: var(--gold-l); color: var(--gold-l); }
+    /* --- Hero left column + inline lead form (desktop) --- */
+    .hero-left { display: flex; flex-direction: column; gap: 26px; max-width: 340px; }
+    .hero-form {
+      align-self: flex-end; display: flex; flex-direction: column; gap: 9px;
+      width: 320px; padding: 22px 22px 18px;
+      background: rgba(26,20,16,.55); backdrop-filter: blur(10px);
+      border: 1px solid rgba(196,163,90,.38);
+      opacity: 0; animation: fadeUp 1s ease 2.7s forwards;
+    }
+    .hero-form .hf-lead {
+      font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 600;
+      letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold-pale); margin-bottom: 3px;
+    }
+    .hero-form .hf-row { display: flex; gap: 8px; }
+    .hero-form input, .hero-form select {
+      flex: 1; width: 100%; padding: 12px 13px; background: rgba(250,247,242,.06);
+      border: 1px solid rgba(250,247,242,.22); color: var(--cream);
+      font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: .3px; outline: none;
+    }
+    .hero-form input::placeholder { color: rgba(250,247,242,.5); }
+    .hero-form select { color: rgba(250,247,242,.72); }
+    .hero-form input:focus, .hero-form select:focus { border-color: var(--gold-l); }
+    .hero-form input.invalid, .hero-form select.invalid { border-color: #c9564e; }
+    .hero-form .hf-btn {
+      margin-top: 3px; padding: 14px 18px; background: var(--gold-l); color: var(--ink);
+      font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 9px;
+      letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer;
+      transition: background .3s, letter-spacing .3s; white-space: nowrap;
+    }
+    .hero-form .hf-btn:hover { background: var(--gold); letter-spacing: 3px; }
+    .hero-form .hf-note { font-size: 9px; color: rgba(250,247,242,.5); letter-spacing: .3px; line-height: 1.5; }
+    .hero-form .cf-status { font-size: 10px; line-height: 1.4; }
+    .hero-form .cf-status.ok  { color: #7DBE8A; }
+    .hero-form .cf-status.err { color: #E08A82; }
+    /* --- Sticky mobile Call / WhatsApp / Book bar --- */
+    .mobile-cta-bar { display: none; }
+    @media (max-width: 820px) {
+      .hero-form { display: none; }               /* mobile uses the sticky bar instead */
+      .mobile-cta-bar {
+        display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 1300;
+        background: rgba(20,15,11,.96); backdrop-filter: blur(8px);
+        border-top: 1px solid rgba(196,163,90,.42); box-shadow: 0 -6px 22px rgba(0,0,0,.38);
+      }
+      .mcb-item {
+        flex: 1; text-align: center; padding: 14px 4px; text-decoration: none;
+        font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600;
+        letter-spacing: .5px; color: var(--cream);
+        border-left: 1px solid rgba(250,247,242,.12);
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+      }
+      .mcb-item:first-child { border-left: none; }
+      .mcb-wa   { background: #25D366; color: #0b3d1e; }
+      .mcb-book { background: var(--gold-l); color: var(--ink); }
+      body { padding-bottom: 54px; }
+    }
     .scroll-hint {
       position: absolute; right: 40px; bottom: 56px; z-index: 2;
       display: flex; flex-direction: column; align-items: center; gap: 12px;
@@ -879,7 +934,7 @@
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Enquire Now</button>
+  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Request a Callback</button>
   <button class="nav-hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -892,7 +947,7 @@
   <a href="#location"  onclick="closeDrawer()">Location</a>
   <a href="#pricing"   onclick="closeDrawer()">Pricing</a>
   <a href="#contact"   onclick="closeDrawer()">Contact</a>
-  <a href="#contact"   onclick="closeDrawer()" class="drawer-cta">Enquire Now</a>
+  <a href="#contact"   onclick="closeDrawer()" class="drawer-cta">Request a Callback</a>
 </div>
 
 <!-- HERO -->
@@ -905,21 +960,61 @@
       <div class="hero-tag-line"></div>
       <span>India's First Westin-Operated Residences</span>
     </div>
-    <h1 class="hero-h1">Where <em>Luxury</em> Meets Living</h1>
+    <h1 class="hero-h1">The <em>Marriott&#8209;Branded</em> Residence</h1>
     <div class="hero-bottom">
-      <p class="hero-desc">Sector 103, Gurugram · Dwarka Expressway · 3 &amp; 4 BHK Residences by Marriott International</p>
-      <div class="hero-stats">
-        <div class="h-stat"><div class="h-stat-num">22<span>+</span></div><div class="h-stat-label">Acres</div></div>
-        <div class="h-stat"><div class="h-stat-num">30<span>+</span></div><div class="h-stat-label">Amenities</div></div>
-        <div class="h-stat"><div class="h-stat-num">₹7<span>Cr</span></div><div class="h-stat-label">Starting</div></div>
+      <div class="hero-left">
+        <p class="hero-desc">3 &amp; 4 BHK on the Dwarka Expressway, Sector 103, Gurugram — from ₹7 Cr. Hotel-managed by Westin for effortless ownership &amp; enduring value. Possession Dec 2028.</p>
+        <div class="hero-stats">
+          <div class="h-stat"><div class="h-stat-num">22<span>+</span></div><div class="h-stat-label">Acres</div></div>
+          <div class="h-stat"><div class="h-stat-num">30<span>+</span></div><div class="h-stat-label">Amenities</div></div>
+          <div class="h-stat"><div class="h-stat-num">₹7<span>Cr</span></div><div class="h-stat-label">Starting</div></div>
+        </div>
+        <div class="hero-btns">
+          <a class="btn-gold" href="#contact">Schedule a Private Visit</a>
+          <a class="btn-outline" href="#overview">Discover More</a>
+        </div>
       </div>
-      <div class="hero-btns">
-        <a class="btn-gold" href="#contact">Schedule a Private Visit</a>
-        <a class="btn-outline" href="#overview">Discover More</a>
-      </div>
+      <form id="heroForm" class="hero-form" novalidate>
+        <div class="hf-lead">Get Price &amp; Floor Plan</div>
+        <div class="hf-row"><input type="text" name="firstName" placeholder="Name" required autocomplete="given-name" /></div>
+        <div class="hf-row"><input type="tel" name="phone" placeholder="Phone" required inputmode="tel" autocomplete="tel" /></div>
+        <div class="hf-row">
+          <select name="residenceType" required>
+            <option value="">Configuration</option>
+            <option>3 BHK Residence</option>
+            <option>4 BHK Residence</option>
+            <option>Penthouse</option>
+          </select>
+        </div>
+        <button type="submit" class="cf-submit hf-btn">Request Callback →</button>
+        <div class="hf-note">A Westin relationship manager will call you · private, no spam.</div>
+        <div class="cf-status" role="status" aria-live="polite"></div>
+        <input type="text" name="hp_ref_8821" tabindex="-1" autocomplete="off" aria-hidden="true" data-lpignore="true" data-1p-ignore data-form-type="other" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+        <input type="hidden" name="gclid" /><input type="hidden" name="fbclid" />
+        <input type="hidden" name="utm_source" /><input type="hidden" name="utm_medium" /><input type="hidden" name="utm_campaign" /><input type="hidden" name="utm_term" /><input type="hidden" name="utm_content" />
+        <input type="hidden" name="page_url" /><input type="hidden" name="referrer" />
+      </form>
     </div>
   </div>
   <div class="scroll-hint"><span>Scroll</span></div>
+</section>
+
+<!-- STICKY MOBILE CTA BAR -->
+<div class="mobile-cta-bar" aria-label="Quick contact">
+  <a href="tel:+917303888722" class="mcb-item mcb-call">📞 Call</a>
+  <a href="https://wa.me/919211313113?text=Hi%2C%20I%27m%20interested%20in%20The%20Westin%20Residences%20(Sector%20103%2C%20Dwarka%20Expressway).%20Please%20share%20price%20%26%20floor%20plans." class="mcb-item mcb-wa" target="_blank" rel="noopener">WhatsApp</a>
+  <a href="#contact" class="mcb-item mcb-book">Book Visit</a>
+</div>
+
+<!-- CHANNEL PARTNER DISCLOSURE -->
+<section style="background:#f5f1ea;border-top:3px solid #9A7B3F;border-bottom:1px solid #ddd6c4;padding:1.2rem 0;">
+  <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem;display:flex;gap:1rem;align-items:flex-start;">
+    <span style="font-size:1.4rem;flex-shrink:0;margin-top:.1rem">ℹ️</span>
+    <div>
+      <p style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9A7B3F;margin:0 0 .4rem">About This Website</p>
+      <p style="font-size:.85rem;color:#3a3028;line-height:1.6;margin:0">This website is independently owned and operated by <strong>Realty Unplugged</strong> (WELLSOLVE CORP PRIVATE LIMITED), an <strong>Authorized Channel Partner</strong> for Whiteland Corporation. <strong>This is not the official website of The Westin Residences or Whiteland Corporation.</strong> Information provided on this website is intended to assist prospective buyers and is subject to change as per the developer.</p>
+    </div>
+  </div>
 </section>
 
 <!-- TICKER -->
@@ -1244,7 +1339,7 @@
         <div><div class="cd-label">Address</div><div class="cd-val">Sector 103, Dwarka Expressway, Gurugram</div></div>
       </div>
     </div>
-    <p class="cf-title">Request a Private Viewing</p>
+    <p class="cf-title">Request a Callback from Realty Unplugged</p>
     <div class="cf-rule"></div>
     <form id="leadForm" novalidate>
       <div class="cf-row">
@@ -1268,8 +1363,9 @@
       <input type="hidden" name="utm_content" />
       <input type="hidden" name="page_url" />
       <input type="hidden" name="referrer" />
-      <button type="submit" class="cf-submit" id="leadSubmit">Request Private Viewing &nbsp;→</button>
+      <button type="submit" class="cf-submit" id="leadSubmit">Request a Callback from Realty Unplugged &nbsp;→</button>
       <p class="cf-consent">By submitting this form, you agree to be contacted regarding your enquiry and accept our <a href="privacy.html">Privacy Policy</a> &amp; <a href="terms.html">Terms &amp; Conditions</a>.</p>
+      <p style="font-size:.75rem;color:#888;margin:.5rem 0 0;line-height:1.5;">Your information will be handled by <strong>Realty Unplugged</strong>, an Authorized Channel Partner for Whiteland Corporation. This is not the official website of The Westin Residences or Whiteland Corporation.</p>
       <p class="cf-status" id="leadStatus" role="status" aria-live="polite"></p>
     </form>
   </div>
@@ -1309,7 +1405,7 @@
         <input type="hidden" name="utm_content" />
         <input type="hidden" name="page_url" />
         <input type="hidden" name="referrer" />
-        <button type="submit" class="cf-submit">Request Private Viewing &nbsp;→</button>
+        <button type="submit" class="cf-submit">Request a Callback from Realty Unplugged &nbsp;→</button>
         <p class="cf-consent">By submitting, you accept our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> &amp; <a href="terms.html" target="_blank" rel="noopener">Terms</a>.</p>
         <p class="cf-status" role="status" aria-live="polite"></p>
       </form>
@@ -1355,7 +1451,7 @@
         RC/REP/HARERA/GGM/949/681/2025/52 &nbsp;DATED: 16.05.2025
       </div>
 
-      <p class="ft-disclaimer">All information, images, renders and artistic impressions are for illustrative purposes only. Nothing herein constitutes a legal offer or contract. Prospective purchasers are advised to independently verify all details before making any purchase decision. Terms &amp; Conditions Apply.</p>
+      <p class="ft-disclaimer">This website is owned and operated by <strong>Realty Unplugged</strong> (WELLSOLVE CORP PRIVATE LIMITED), an Authorized Channel Partner for Whiteland Corporation. It is not the official website of The Westin Residences or Whiteland Corporation. The information displayed is collected from publicly available sources and developer marketing material and is subject to change without prior notice. All images, renders and artistic impressions are for illustrative purposes only and do not constitute a legal offer or contract. Prospective purchasers are advised to independently verify all details, approvals and RERA registrations with the developer before making any purchase decision. All trademarks, logos and brand assets belong to their respective owners.</p>
     </div>
 
   </div>
@@ -1500,9 +1596,9 @@
       setStatus('', '');
 
       const payload = new URLSearchParams(new FormData(form));
+      fireLeadConversions(Object.fromEntries(payload));
       try {
         await fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: payload });
-        fireLeadConversions(Object.fromEntries(payload));
         try { localStorage.setItem('wr_lead_done', '1'); } catch (e) {}
         form.reset();
         fillHidden();
@@ -1526,8 +1622,19 @@
 
   // 4) Wire both forms
   wireLead(document.getElementById('leadForm'));
+  wireLead(document.getElementById('heroForm'));
   const popup = document.getElementById('leadPopup');
   wireLead(document.getElementById('popupForm'), { onSuccess: () => setTimeout(closePopup, 2600) });
+
+  // Track WhatsApp / Call taps from the sticky mobile bar as soft conversions
+  document.querySelectorAll('.mcb-wa').forEach(a => a.addEventListener('click', () => {
+    try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'WhatsApp' }); } catch (e) {}
+    try { if (window.gtag) gtag('event', 'whatsapp_click', { transport_type: 'beacon' }); } catch (e) {}
+  }));
+  document.querySelectorAll('.mcb-call').forEach(a => a.addEventListener('click', () => {
+    try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'Call' }); } catch (e) {}
+    try { if (window.gtag) gtag('event', 'phone_click', { transport_type: 'beacon' }); } catch (e) {}
+  }));
 
   // 5) Time-based popup — opens after 15s, once per session, never if a lead was already sent
   const POPUP_DELAY = 15000;
