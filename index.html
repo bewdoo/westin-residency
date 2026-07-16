@@ -264,10 +264,13 @@
       transition: all .35s; white-space: nowrap;
     }
     .btn-outline:hover { border-color: var(--gold-l); color: var(--gold-l); }
-    /* --- Hero left column + inline lead form (desktop) --- */
-    .hero-left { display: flex; flex-direction: column; gap: 26px; max-width: 340px; }
+    /* --- Two-column hero: content left, lead form right (desktop) --- */
+    @media (min-width: 821px) {
+      .hero-content { display: flex; align-items: flex-end; justify-content: space-between; gap: 56px; }
+      .hero-main { flex: 1 1 auto; min-width: 0; }
+    }
     .hero-form {
-      align-self: flex-end; display: flex; flex-direction: column; gap: 9px;
+      align-self: flex-end; flex: 0 0 320px; display: flex; flex-direction: column; gap: 9px;
       width: 320px; padding: 22px 22px 18px;
       background: rgba(26,20,16,.55); backdrop-filter: blur(10px);
       border: 1px solid rgba(196,163,90,.38);
@@ -956,13 +959,13 @@
   <div class="hero-overlay"></div>
   <canvas id="heroParticles"></canvas>
   <div class="hero-content">
-    <div class="hero-tag">
-      <div class="hero-tag-line"></div>
-      <span>India's First Westin-Operated Residences</span>
-    </div>
-    <h1 class="hero-h1">The <em>Marriott&#8209;Branded</em> Residence</h1>
-    <div class="hero-bottom">
-      <div class="hero-left">
+    <div class="hero-main">
+      <div class="hero-tag">
+        <div class="hero-tag-line"></div>
+        <span>India's First Westin-Operated Residences</span>
+      </div>
+      <h1 class="hero-h1">The <em>Marriott&#8209;Branded</em> Residence</h1>
+      <div class="hero-bottom">
         <p class="hero-desc">3 &amp; 4 BHK on the Dwarka Expressway, Sector 103, Gurugram — from ₹7 Cr. Hotel-managed by Westin for effortless ownership &amp; enduring value. Possession Dec 2028.</p>
         <div class="hero-stats">
           <div class="h-stat"><div class="h-stat-num">22<span>+</span></div><div class="h-stat-label">Acres</div></div>
@@ -974,7 +977,8 @@
           <a class="btn-outline" href="#overview">Discover More</a>
         </div>
       </div>
-      <form id="heroForm" class="hero-form" novalidate>
+    </div>
+    <form id="heroForm" class="hero-form" novalidate>
         <div class="hf-lead">Get Price &amp; Floor Plan</div>
         <div class="hf-row"><input type="text" name="firstName" placeholder="Name" required autocomplete="given-name" /></div>
         <div class="hf-row"><input type="tel" name="phone" placeholder="Phone" required inputmode="tel" autocomplete="tel" /></div>
@@ -994,7 +998,6 @@
         <input type="hidden" name="utm_source" /><input type="hidden" name="utm_medium" /><input type="hidden" name="utm_campaign" /><input type="hidden" name="utm_term" /><input type="hidden" name="utm_content" />
         <input type="hidden" name="page_url" /><input type="hidden" name="referrer" />
       </form>
-    </div>
   </div>
   <div class="scroll-hint"><span>Scroll</span></div>
 </section>
