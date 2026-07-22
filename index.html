@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#1A1410" />
+  <link rel="preload" as="image" href="https://westinresidency.co.in/wp-content/uploads/2026/05/WestinRes2-4-25-358-Enhanced-NR_Web.webp" fetchpriority="high" />
+  <link rel="preconnect" href="https://westinresidency.co.in" crossorigin />
   <title>The Westin Residences — Gurugram</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -640,6 +642,13 @@
     .cf-status.ok  { color: #2f7d4f; }
     .cf-status.err { color: #b3261e; }
     .cf-grp input.invalid, .cf-grp select.invalid { border-color: #b3261e; }
+    /* Thumb-first: 16px inputs prevent iOS auto-zoom; larger tap targets on mobile */
+    @media (max-width: 820px) {
+      .cf-grp input, .cf-grp select, .cf-grp textarea,
+      .hero-form input, .hero-form select { font-size: 16px; padding-top: 15px; padding-bottom: 15px; }
+      .cf-submit, .hero-form .hf-btn { min-height: 52px; }
+      .mcb-item { min-height: 52px; }
+    }
     .cf-consent { margin-top: 14px; font-size: 10px; line-height: 1.7; letter-spacing: .3px; color: rgba(26,20,16,.5); }
     .cf-consent a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(154,123,63,.35); transition: color .3s; }
     .cf-consent a:hover { color: var(--ink); }
@@ -955,7 +964,7 @@
 
 <!-- HERO -->
 <section class="hero">
-  <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/WestinRes2-4-25-358-Enhanced-NR_Web.webp" alt="The Westin Residences" />
+  <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/WestinRes2-4-25-358-Enhanced-NR_Web.webp" alt="The Westin Residences" fetchpriority="high" decoding="async" />
   <div class="hero-overlay"></div>
   <canvas id="heroParticles"></canvas>
   <div class="hero-content">
@@ -1039,8 +1048,8 @@
   <div class="overview-inner">
     <div class="ov-visual" data-r="left">
       <div class="ov-badge"><strong>22</strong><small>Acres</small></div>
-      <img class="ov-main" src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="Grand Entrance" />
-      <img class="ov-accent" src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_01_52-PM.webp" alt="Interior" />
+      <img class="ov-main" src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="Grand Entrance" loading="lazy" decoding="async" />
+      <img class="ov-accent" src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-03_01_52-PM.webp" alt="Interior" loading="lazy" decoding="async" />
     </div>
     <div class="ov-text" data-r="right">
       <p class="tag">The Residence</p>
@@ -1075,11 +1084,11 @@
   </div>
   <div class="gallery-mosaic">
     <div class="gm tall" data-r="left">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="Club Entrance" />
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="Club Entrance" loading="lazy" decoding="async" />
       <div class="gm-info"><div class="gm-label">Grand Entrance</div><div class="gm-title">Club Drop-Off &amp; Arrival</div></div>
     </div>
     <div class="gm" data-r="up" data-d="1">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-02_58_24-PM.webp" alt="Interior" />
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/ChatGPT-Image-May-6-2026-02_58_24-PM.webp" alt="Interior" loading="lazy" decoding="async" />
       <div class="gm-info"><div class="gm-label">Residences</div><div class="gm-title">Luxury Interiors</div></div>
     </div>
     <div class="gm" data-r="up" data-d="2">
@@ -1342,18 +1351,15 @@
         <div><div class="cd-label">Address</div><div class="cd-val">Sector 103, Dwarka Expressway, Gurugram</div></div>
       </div>
     </div>
-    <p class="cf-title">Request a Callback from Realty Unplugged</p>
+    <p class="cf-title">Get the Price List &amp; Floor Plans</p>
     <div class="cf-rule"></div>
     <form id="leadForm" novalidate>
-      <div class="cf-row">
-        <div class="cf-grp"><input type="text" name="firstName" placeholder="First Name" required autocomplete="given-name" /></div>
-        <div class="cf-grp"><input type="text" name="lastName" placeholder="Last Name" autocomplete="family-name" /></div>
-      </div>
+      <div class="cf-grp"><input type="text" name="firstName" placeholder="Full Name" required autocomplete="name" /></div>
       <div class="cf-grp"><input type="tel" name="phone" placeholder="Phone Number" required autocomplete="tel" inputmode="tel" /></div>
-      <div class="cf-grp"><input type="email" name="email" placeholder="Email Address" required autocomplete="email" inputmode="email" /></div>
       <div class="cf-grp">
         <select name="residenceType" required><option value="">Select Residence Type</option><option>3 BHK Residence</option><option>4 BHK Residence</option><option>Penthouse</option></select>
       </div>
+      <input type="hidden" name="lastName" />
       <!-- honeypot: hidden from people, catches bots -->
       <input type="text" name="hp_ref_8821" id="hpField" tabindex="-1" autocomplete="off" aria-hidden="true" data-lpignore="true" data-1p-ignore data-form-type="other" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
       <!-- attribution (auto-filled by JS) -->
@@ -1366,7 +1372,7 @@
       <input type="hidden" name="utm_content" />
       <input type="hidden" name="page_url" />
       <input type="hidden" name="referrer" />
-      <button type="submit" class="cf-submit" id="leadSubmit">Request a Callback from Realty Unplugged &nbsp;→</button>
+      <button type="submit" class="cf-submit" id="leadSubmit">Send Me the Price &amp; Floor Plans &nbsp;→</button>
       <p class="cf-consent">By submitting this form, you agree to be contacted regarding your enquiry and accept our <a href="privacy.html">Privacy Policy</a> &amp; <a href="terms.html">Terms &amp; Conditions</a>.</p>
       <p style="font-size:.75rem;color:#888;margin:.5rem 0 0;line-height:1.5;">Your information will be handled by <strong>Realty Unplugged</strong>, an Authorized Channel Partner for Whiteland Corporation. This is not the official website of The Westin Residences or Whiteland Corporation.</p>
       <p class="cf-status" id="leadStatus" role="status" aria-live="polite"></p>
@@ -1379,7 +1385,7 @@
   <div class="lp-modal">
     <button class="lp-close" id="lpClose" aria-label="Close">&times;</button>
     <div class="lp-visual">
-      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="The Westin Residences" />
+      <img src="https://westinresidency.co.in/wp-content/uploads/2026/05/Whiteland103-ClubDropOff_Web-5.webp" alt="The Westin Residences" loading="lazy" decoding="async" />
       <div class="lp-visual-ov"></div>
       <div class="lp-visual-cap">
         <span class="lp-gem"></span>
@@ -1393,7 +1399,6 @@
       <form id="popupForm" novalidate>
         <div class="cf-grp"><input type="text" name="firstName" placeholder="Full Name" required autocomplete="name" /></div>
         <div class="cf-grp"><input type="tel" name="phone" placeholder="Phone Number" required inputmode="tel" autocomplete="tel" /></div>
-        <div class="cf-grp"><input type="email" name="email" placeholder="Email Address" required inputmode="email" autocomplete="email" /></div>
         <div class="cf-grp">
           <select name="residenceType" required><option value="">Select Residence Type</option><option>3 BHK Residence</option><option>4 BHK Residence</option><option>Penthouse</option></select>
         </div>
@@ -1408,7 +1413,7 @@
         <input type="hidden" name="utm_content" />
         <input type="hidden" name="page_url" />
         <input type="hidden" name="referrer" />
-        <button type="submit" class="cf-submit">Request a Callback from Realty Unplugged &nbsp;→</button>
+        <button type="submit" class="cf-submit">Get Price &amp; Floor Plans &nbsp;→</button>
         <p class="cf-consent">By submitting, you accept our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> &amp; <a href="terms.html" target="_blank" rel="noopener">Terms</a>.</p>
         <p class="cf-status" role="status" aria-live="polite"></p>
       </form>
@@ -1512,7 +1517,7 @@
   // ── HERO GOLD PARTICLES (subtle floating dust)
   (function () {
     const c = document.getElementById('heroParticles');
-    if (!c || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!c || window.innerWidth < 820 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const ctx = c.getContext('2d');
     let W, H, parts = [];
     const N = window.innerWidth < 768 ? 36 : 70;
@@ -1605,8 +1610,8 @@
         try { localStorage.setItem('wr_lead_done', '1'); } catch (e) {}
         form.reset();
         fillHidden();
-        setStatus('Thank you — your request has been received. Our team will contact you shortly.', 'ok');
-        submitBtn.textContent = 'Request Sent ✓';
+        setStatus('Thank you — we’re sending the price list & floor plans to your WhatsApp now, and a Westin relationship manager will call you shortly.', 'ok');
+        submitBtn.textContent = 'On its way ✓';
         if (typeof opts.onSuccess === 'function') opts.onSuccess();
       } catch (err) {
         setStatus('Something went wrong. Please call +91 7303 888 722 or try again.', 'err');
