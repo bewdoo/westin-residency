@@ -51,7 +51,7 @@ function doPost(e) {
       sheet.appendRow([
         'Timestamp','First Name','Last Name','Phone','Email','Residence Type',
         'gclid','fbclid','utm_source','utm_medium','utm_campaign','utm_term','utm_content',
-        'Page URL','Referrer','CAPI'
+        'Page URL','Referrer'
       ]);
       sheet.getRange('1:1').setFontWeight('bold');
     }
@@ -60,13 +60,18 @@ function doPost(e) {
     // never let a Meta failure cost us the lead — sendMetaCapiLead never throws.
     var capiStatus = sendMetaCapiLead(p);
 
+    // Append exactly the original 15 columns. The CAPI result is written
+    // separately, by header lookup, so it can never land on a column the
+    // team added themselves (Notes, Status, …).
     sheet.appendRow([
       new Date(),
       safe(p.firstName), safe(p.lastName), safe(p.phone), safe(p.email), safe(p.residenceType),
       safe(p.gclid), safe(p.fbclid), safe(p.utm_source), safe(p.utm_medium), safe(p.utm_campaign),
-      safe(p.utm_term), safe(p.utm_content), safe(p.page_url), safe(p.referrer),
-      safe(capiStatus)
+      safe(p.utm_term), safe(p.utm_content), safe(p.page_url), safe(p.referrer)
     ]);
+    try {
+      sheet.getRange(sheet.getLastRow(), capiColumn_(sheet)).setValue(safe(capiStatus));
+    } catch (e) { Logger.log('CAPI column write failed: %s', e); }
 
     var subject = 'New Westin Residences Lead — ' + (p.firstName || '') + ' ' + (p.lastName || '');
     var body =
@@ -98,6 +103,22 @@ function doPost(e) {
       .createTextOutput(JSON.stringify({ result: 'error', message: String(err) }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+/**
+ * Column index of the 'CAPI' header, creating it at the first free column
+ * if absent. Looked up by NAME so adding/reordering columns never causes
+ * the status to overwrite someone's data.
+ */
+function capiColumn_(sheet) {
+  var lastCol = Math.max(sheet.getLastColumn(), 1);
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  for (var i = 0; i < headers.length; i++) {
+    if (String(headers[i]).trim().toUpperCase() === 'CAPI') return i + 1;
+  }
+  var col = lastCol + 1;
+  sheet.getRange(1, col).setValue('CAPI').setFontWeight('bold');
+  return col;
 }
 
 function doGet() {
