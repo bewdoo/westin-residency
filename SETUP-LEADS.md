@@ -100,6 +100,58 @@ forwards these with the form because only the browser can read them.
 
 ---
 
+## 2c. Lead-status feedback — MQL / SQL  (optional, high value)
+
+Meta optimises for whatever you report. Reporting only form fills teaches it
+to find more form fills, qualified or not. Type a qualification into the sheet
+and it is sent to Meta as its own conversion, so campaigns can chase leads the
+team actually qualified.
+
+### Setup (once)
+
+1. In the Apps Script editor run **`installStatusTrigger`**. It creates the edit
+   trigger and adds two columns: **Status** (you edit) and **Status Sent**
+   (written by the script — leave it alone). Authorise when prompted; this adds
+   a trigger scope the earlier run did not need.
+2. Optional sanity check: run **`testStatusColumns`** and read Executions. Every
+   column should resolve to a number, none `MISSING`. It contacts Meta not at all.
+3. In **Events Manager ▸ Custom conversions ▸ Create**, make one per event —
+   `MQL` and `SQL` — then point campaign optimisation at those instead of Lead.
+
+### Using it
+
+Type `MQL` or `SQL` into the Status column. Case doesn't matter. Anything else
+(`Junk`, `Lost`, blank) is ignored. The Status Sent column records what went,
+e.g. `MQL ok [ph+fbp] · SQL ok [ph+fbp]`.
+
+Add your own stages by editing `STATUS_EVENTS` at the top of the script:
+
+```javascript
+var STATUS_EVENTS = {
+  'MQL': 'MQL',
+  'SQL': 'SQL',
+  'SITE VISIT': 'SiteVisit',   // add freely
+  'BOOKED':     'Purchase'
+};
+```
+
+### How it behaves
+
+- **Sends once.** Re-editing a row, or flipping MQL → SQL → MQL, never resends;
+  each event fires a single time per row.
+- **Safe to retry.** The `event_id` is stable per row and event, so even a
+  duplicate delivery is deduplicated by Meta rather than double-counted.
+- **Not deduplicated against the Lead** — a qualification is a *different*
+  conversion, deliberately counted separately.
+- **`action_source: system_generated`**, because it did not happen in a browser.
+- **Matching** uses phone, name and the `_fbp`/`_fbc` cookies stored at lead
+  time. This is why those columns exist — without them a qualification sent days
+  later would match on phone alone.
+- **Never blocks you.** A Meta failure is recorded in Status Sent; your edit
+  still saves.
+
+---
+
 ## 3. Google Ads + GCLID  (required)
 
 1. In **Google Ads ▸ Goals ▸ Conversions**, create/open a conversion action

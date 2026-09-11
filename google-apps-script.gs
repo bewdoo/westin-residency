@@ -34,11 +34,35 @@ var NOTIFY_EMAIL = 'unplugged.realty11@gmail.com';   // leads are emailed here
 var SHEET_NAME   = 'Leads';
 var META_API_VER = 'v21.0';
 
+// ── Lead-status feedback ────────────────────────────────────────────
+// Type one of these into the Status column and that qualification is sent
+// to Meta as its own conversion, so campaigns can optimise for leads the
+// team actually qualified instead of raw form fills.
+// Left side = what you type (case-insensitive). Right = the Meta event name.
+// Extend freely, e.g. 'SITE VISIT': 'SiteVisit', 'BOOKED': 'Purchase'.
+var STATUS_EVENTS = {
+  'MQL': 'MQL',
+  'SQL': 'SQL'
+};
+var STATUS_HEADER      = 'Status';       // you edit this column
+var STATUS_SENT_HEADER = 'Status Sent';  // written by the script — don't edit
+var CAPI_HEADER        = 'CAPI';
+var FBP_HEADER         = 'fbp';
+var FBC_HEADER         = 'fbc';
+
 // Force a value to be stored as TEXT so Sheets doesn't treat "+91…" / "=" / "-" / "@"
 // as a formula (which causes #ERROR!). Also blocks CSV/formula injection.
 function safe(v) {
   v = (v == null ? '' : String(v));
   return /^[=+\-@]/.test(v) ? "'" + v : v;
+}
+
+// Phones must ALWAYS be text. A bare digit string like 919812345678 is
+// otherwise stored as a number and can render as 1E+15, losing the value
+// for good — which matters now that status events read phones back out.
+function safePhone(v) {
+  v = (v == null ? '' : String(v)).trim();
+  return v ? "'" + v : '';
 }
 
 function doPost(e) {
@@ -65,13 +89,18 @@ function doPost(e) {
     // team added themselves (Notes, Status, …).
     sheet.appendRow([
       new Date(),
-      safe(p.firstName), safe(p.lastName), safe(p.phone), safe(p.email), safe(p.residenceType),
+      safe(p.firstName), safe(p.lastName), safePhone(p.phone), safe(p.email), safe(p.residenceType),
       safe(p.gclid), safe(p.fbclid), safe(p.utm_source), safe(p.utm_medium), safe(p.utm_campaign),
       safe(p.utm_term), safe(p.utm_content), safe(p.page_url), safe(p.referrer)
     ]);
+    // Persist the Meta cookies: a status event fired days later can only
+    // match well if these were kept at lead time.
     try {
-      sheet.getRange(sheet.getLastRow(), capiColumn_(sheet)).setValue(safe(capiStatus));
-    } catch (e) { Logger.log('CAPI column write failed: %s', e); }
+      var r = sheet.getLastRow();
+      sheet.getRange(r, sheetColumn_(sheet, CAPI_HEADER, true)).setValue(safe(capiStatus));
+      sheet.getRange(r, sheetColumn_(sheet, FBP_HEADER,  true)).setValue(safe(p.fbp));
+      sheet.getRange(r, sheetColumn_(sheet, FBC_HEADER,  true)).setValue(safe(p.fbc));
+    } catch (e) { Logger.log('column write failed: %s', e); }
 
     var subject = 'New Westin Residences Lead — ' + (p.firstName || '') + ' ' + (p.lastName || '');
     var body =
@@ -106,18 +135,20 @@ function doPost(e) {
 }
 
 /**
- * Column index of the 'CAPI' header, creating it at the first free column
- * if absent. Looked up by NAME so adding/reordering columns never causes
- * the status to overwrite someone's data.
+ * Column index of a header, creating it at the first free column when
+ * absent (and asked to). Looked up by NAME so adding or reordering
+ * columns can never make the script overwrite someone's data.
  */
-function capiColumn_(sheet) {
+function sheetColumn_(sheet, header, create) {
   var lastCol = Math.max(sheet.getLastColumn(), 1);
   var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var want = String(header).trim().toUpperCase();
   for (var i = 0; i < headers.length; i++) {
-    if (String(headers[i]).trim().toUpperCase() === 'CAPI') return i + 1;
+    if (String(headers[i]).trim().toUpperCase() === want) return i + 1;
   }
+  if (!create) return 0;
   var col = lastCol + 1;
-  sheet.getRange(1, col).setValue('CAPI').setFontWeight('bold');
+  sheet.getRange(1, col).setValue(header).setFontWeight('bold');
   return col;
 }
 
@@ -168,6 +199,15 @@ function normName(v) {
  * NEVER throws — lead capture must survive any Meta/network failure.
  */
 function sendMetaCapiLead(p) {
+  return sendMetaCapiEvent_('Lead', p, 'website');
+}
+
+/**
+ * Send ONE event to Meta. Used for the website Lead and for the later
+ * MQL/SQL qualifications. Returns a short status string; NEVER throws —
+ * lead capture and sheet edits must survive any Meta/network failure.
+ */
+function sendMetaCapiEvent_(eventName, p, actionSource) {
   try {
     var props     = PropertiesService.getScriptProperties();
     var pixelId   = props.getProperty('META_PIXEL_ID');
@@ -199,19 +239,26 @@ function sendMetaCapiLead(p) {
     if (!eventTime || isNaN(eventTime)) eventTime = Math.floor(Date.now() / 1000);
 
     var evt = {
-      event_name:       'Lead',
-      event_time:       eventTime,
-      action_source:    'website',
-      // Same id the browser Pixel sent, so Meta collapses the two into one Lead.
-      event_id:         String(p.event_id || ''),
-      event_source_url: String(p.page_url || 'https://indiawestinresidences.com/'),
-      user_data:        userData,
+      event_name:    eventName,
+      event_time:    eventTime,
+      // 'website' for the form Lead; 'system_generated' for a qualification
+      // typed into the sheet, which did not happen in a browser.
+      action_source: actionSource || 'website',
+      // For Lead this is the id the browser Pixel also sent, so Meta collapses
+      // the two copies. For MQL/SQL it is a stable per-row id, so an accidental
+      // re-fire is deduplicated instead of counted twice.
+      event_id:      String(p.event_id || ''),
+      user_data:     userData,
       custom_data: {
         content_name: String(p.residenceType || 'Residence Enquiry'),
         currency:     'INR',
         value:        0
       }
     };
+    // Only meaningful for browser events; Meta rejects it on some others.
+    if ((actionSource || 'website') === 'website') {
+      evt.event_source_url = String(p.page_url || 'https://indiawestinresidences.com/');
+    }
     if (!evt.event_id) delete evt.event_id;
 
     var body = { data: [evt], access_token: token };
@@ -235,7 +282,7 @@ function sendMetaCapiLead(p) {
       if (p.fbc) keys.push('fbc'); if (p.fbp) keys.push('fbp');
       return 'ok [' + keys.join('+') + ']';
     }
-    Logger.log('Meta CAPI %s: %s', code, text);
+    Logger.log('Meta CAPI %s (%s): %s', code, eventName, text);
     return 'error ' + code + ' ' + text.slice(0, 180);
   } catch (err) {
     Logger.log('Meta CAPI exception: %s', err);
@@ -259,4 +306,109 @@ function testMetaCapi() {
     user_agent: 'Mozilla/5.0 (Apps Script CAPI test)'
   });
   Logger.log('testMetaCapi → %s', status);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  LEAD-STATUS FEEDBACK  ·  MQL / SQL  →  META
+// ═══════════════════════════════════════════════════════════════════════
+//
+//  Meta optimises for whatever you tell it counts. Reporting only form
+//  fills teaches it to find more form fills — qualified or not. Sending
+//  the qualification back lets campaigns chase leads that convert.
+//
+//  SETUP: run installStatusTrigger() once (Run ▸ installStatusTrigger).
+//  Then just type MQL or SQL into the Status column.
+
+/**
+ * Install the edit trigger. Safe to run repeatedly — it clears its own
+ * duplicates first. A plain onEdit() cannot be used: simple triggers run
+ * without authorisation and so cannot call out to Meta.
+ */
+function installStatusTrigger() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'onLeadStatusEdit') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('onLeadStatusEdit').forSpreadsheet(ss).onEdit().create();
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  if (sheet) {
+    sheetColumn_(sheet, STATUS_HEADER, true);
+    sheetColumn_(sheet, STATUS_SENT_HEADER, true);
+  }
+  Logger.log('Status trigger installed. Type %s into the "%s" column.',
+             Object.keys(STATUS_EVENTS).join(' / '), STATUS_HEADER);
+}
+
+/** Fires on every sheet edit; ignores everything except the Status column. */
+function onLeadStatusEdit(e) {
+  try {
+    if (!e || !e.range) return;
+    var sheet = e.range.getSheet();
+    if (sheet.getName() !== SHEET_NAME) return;
+
+    var statusCol = sheetColumn_(sheet, STATUS_HEADER, false);
+    if (!statusCol) return;
+    var firstCol = e.range.getColumn();
+    var lastCol  = firstCol + e.range.getNumColumns() - 1;
+    if (statusCol < firstCol || statusCol > lastCol) return;   // not a Status edit
+
+    var firstRow = Math.max(e.range.getRow(), 2);               // never the header
+    var lastRow  = e.range.getRow() + e.range.getNumRows() - 1;
+    for (var r = firstRow; r <= lastRow; r++) processStatusRow_(sheet, r);
+  } catch (err) {
+    Logger.log('onLeadStatusEdit error: %s', err);
+  }
+}
+
+/** Send one row's qualification, once. */
+function processStatusRow_(sheet, row) {
+  var statusCol = sheetColumn_(sheet, STATUS_HEADER, true);
+  var sentCol   = sheetColumn_(sheet, STATUS_SENT_HEADER, true);
+
+  var typed = String(sheet.getRange(row, statusCol).getValue() || '').trim().toUpperCase();
+  if (!typed) return;
+  var eventName = STATUS_EVENTS[typed];
+  if (!eventName) return;                       // e.g. "Junk" — nothing to report
+
+  // Idempotent: re-editing the row, or flipping MQL→SQL→MQL, never resends.
+  var already = String(sheet.getRange(row, sentCol).getValue() || '');
+  if (already.indexOf(eventName + ' ok') !== -1) return;
+
+  var get = function (header) {
+    var c = sheetColumn_(sheet, header, false);
+    return c ? String(sheet.getRange(row, c).getValue() || '') : '';
+  };
+
+  var status = sendMetaCapiEvent_(eventName, {
+    firstName:     get('First Name'),
+    lastName:      get('Last Name'),
+    phone:         get('Phone'),
+    email:         get('Email'),
+    residenceType: get('Residence Type'),
+    fbp:           get(FBP_HEADER),
+    fbc:           get(FBC_HEADER),
+    // Stable per row + event, so a retry deduplicates rather than double-counts.
+    event_id:      eventName.toLowerCase() + '-r' + row + '-' +
+                   SpreadsheetApp.getActiveSpreadsheet().getId().slice(-8),
+    event_time:    Math.floor(Date.now() / 1000)
+  }, 'system_generated');
+
+  sheet.getRange(row, sentCol)
+       .setValue((already ? already + ' · ' : '') + eventName + ' ' + status);
+}
+
+/**
+ * Dry-run the status path against row 2 WITHOUT touching Meta — confirms
+ * the columns resolve and the row reads back correctly. Check Executions.
+ */
+function testStatusColumns() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  if (!sheet) { Logger.log('No "%s" sheet found.', SHEET_NAME); return; }
+  ['First Name','Last Name','Phone','Email','Residence Type',
+   FBP_HEADER, FBC_HEADER, CAPI_HEADER, STATUS_HEADER, STATUS_SENT_HEADER]
+  .forEach(function (h) {
+    var c = sheetColumn_(sheet, h, false);
+    Logger.log('%-16s -> %s', h, c ? 'column ' + c : 'MISSING');
+  });
+  Logger.log('Recognised statuses: %s', Object.keys(STATUS_EVENTS).join(', '));
 }
