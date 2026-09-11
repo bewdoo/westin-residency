@@ -1571,6 +1571,30 @@
   })();
   const getAttribution = () => JSON.parse(localStorage.getItem('wr_attrib') || '{}');
 
+  // 1b) Meta CAPI helpers.
+  //     The site is static, so the server-side Lead is relayed by the Apps
+  //     Script that already receives the form. These three helpers give it the
+  //     two things only the BROWSER can know: the Meta cookies, and a shared
+  //     event id used to dedupe the Pixel event against the server copy.
+  const getCookie = (name) => {
+    const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return m ? m.pop() : '';
+  };
+  // _fbc only exists if the visitor landed on a ?fbclid=… URL while the Pixel
+  // was loaded. If the cookie is missing but we stored the click id earlier,
+  // rebuild it in Meta's documented format: fb.1.<creation-ms>.<fbclid>
+  function getFbc() {
+    const c = getCookie('_fbc');
+    if (c) return c;
+    const store = getAttribution();
+    if (!store.fbclid) return '';
+    return 'fb.1.' + (store._ts || Date.now()) + '.' + store.fbclid;
+  }
+  const genEventId = () => {
+    try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+    return 'wr-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+  };
+
   // 2) Reusable form wiring — powers BOTH the main form and the 15s popup form
   function wireLead(form, opts) {
     if (!form) return;
@@ -1604,7 +1628,15 @@
       setStatus('', '');
 
       const payload = new URLSearchParams(new FormData(form));
-      fireLeadConversions(Object.fromEntries(payload));
+      // One event_id shared by the browser Pixel and the server relay, so Meta
+      // collapses the two into a single Lead instead of double-counting it.
+      const eventId = genEventId();
+      payload.set('event_id',   eventId);
+      payload.set('event_time', String(Math.floor(Date.now() / 1000)));
+      payload.set('fbp',        getCookie('_fbp'));
+      payload.set('fbc',        getFbc());
+      payload.set('user_agent', navigator.userAgent);
+      fireLeadConversions(Object.fromEntries(payload), eventId);
       try {
         await fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: payload });
         try { localStorage.setItem('wr_lead_done', '1'); } catch (e) {}
@@ -1622,8 +1654,9 @@
   }
 
   // 3) Fire conversion pixels/events after a successful submit
-  function fireLeadConversions(data) {
-    try { if (window.fbq)  fbq('track', 'Lead', { content_name: data.residenceType || 'Residence Enquiry' }); } catch (e) {}
+  function fireLeadConversions(data, eventId) {
+    // 4th arg carries eventID — this is what pairs with the server-side event.
+    try { if (window.fbq)  fbq('track', 'Lead', { content_name: data.residenceType || 'Residence Enquiry' }, eventId ? { eventID: eventId } : undefined); } catch (e) {}
     try { if (window.gtag) gtag('event', 'conversion', { send_to: AW_SEND_TO }); } catch (e) {}   // Google Ads
     try { if (window.gtag) gtag('event', 'generate_lead', { currency: 'INR', value: 0 }); } catch (e) {} // GA4
   }
