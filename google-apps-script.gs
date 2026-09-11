@@ -387,9 +387,13 @@ function processStatusRow_(sheet, row) {
     residenceType: get('Residence Type'),
     fbp:           get(FBP_HEADER),
     fbc:           get(FBC_HEADER),
-    // Stable per row + event, so a retry deduplicates rather than double-counts.
-    event_id:      eventName.toLowerCase() + '-r' + row + '-' +
-                   SpreadsheetApp.getActiveSpreadsheet().getId().slice(-8),
+    // Derived from the LEAD (its timestamp + phone), never the row number.
+    // Row numbers shift when the sheet is sorted or a row is deleted, which
+    // would hand a new lead an id an earlier one already used — Meta would
+    // dedupe it away and the qualification would vanish silently.
+    event_id:      eventName.toLowerCase() + '-' + sha256Hex(
+                     String(get('Timestamp')) + '|' + get('Phone') + '|' + eventName
+                   ).slice(0, 24),
     event_time:    Math.floor(Date.now() / 1000)
   }, 'system_generated');
 
@@ -398,8 +402,7 @@ function processStatusRow_(sheet, row) {
 }
 
 /**
- * Dry-run the status path against row 2 WITHOUT touching Meta — confirms
- * the columns resolve and the row reads back correctly. Check Executions.
+ * Print which columns resolve, WITHOUT touching Meta. Check Executions.
  */
 function testStatusColumns() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
@@ -411,4 +414,48 @@ function testStatusColumns() {
     Logger.log('%-16s -> %s', h, c ? 'column ' + c : 'MISSING');
   });
   Logger.log('Recognised statuses: %s', Object.keys(STATUS_EVENTS).join(', '));
+}
+
+/**
+ * Diagnostics: prints the credential state, then sends one throwaway MQL and
+ * logs Meta's full reply (events_received / messages / fbtrace_id).
+ *
+ * REFUSES TO SEND unless META_TEST_EVENT_CODE is set — without it this would
+ * inject a fake qualification straight into production data.
+ */
+function debugCapi() {
+  var props    = PropertiesService.getScriptProperties();
+  var pixelId  = props.getProperty('META_PIXEL_ID');
+  var token    = props.getProperty('META_CAPI_TOKEN');
+  var testCode = props.getProperty('META_TEST_EVENT_CODE');
+
+  Logger.log('META_PIXEL_ID        : %s', pixelId || '*** MISSING ***');
+  Logger.log('META_CAPI_TOKEN      : %s', token ? 'set (' + token.length + ' chars)' : '*** MISSING ***');
+  Logger.log('META_TEST_EVENT_CODE : %s', testCode || 'not set');
+  if (!pixelId || !token) { Logger.log('Missing credentials — nothing sent.'); return; }
+  if (!testCode) {
+    Logger.log('No test code set, so this would write a FAKE MQL into live data.');
+    Logger.log('Nothing sent. Add META_TEST_EVENT_CODE to use this.');
+    return;
+  }
+
+  var res = UrlFetchApp.fetch(
+    'https://graph.facebook.com/' + META_API_VER + '/' + pixelId + '/events',
+    { method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+      payload: JSON.stringify({
+        data: [{
+          event_name:    'MQL',
+          event_time:    Math.floor(Date.now() / 1000),
+          action_source: 'system_generated',
+          event_id:      'debug-' + Date.now(),
+          user_data:     { ph: [sha256Hex(normPhone('+91 73038 88722'))] }
+        }],
+        access_token:    token,
+        test_event_code: testCode
+      }) });
+
+  Logger.log('HTTP %s', res.getResponseCode());
+  Logger.log('response: %s', res.getContentText());
+  Logger.log('NOTE: Test events does not display action_source "system_generated".');
+  Logger.log('      A 200 with events_received:1 IS the confirmation.');
 }
