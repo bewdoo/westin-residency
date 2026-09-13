@@ -75,30 +75,6 @@
     ::-webkit-scrollbar-track { background: var(--cream); }
     ::-webkit-scrollbar-thumb { background: var(--gold); }
 
-    /* ── LOADER ── */
-    #loader {
-      position: fixed; inset: 0; z-index: 10000;
-      background: var(--ink);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 28px;
-    }
-    .ld-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px; letter-spacing: 10px; text-transform: uppercase;
-      color: var(--gold-pale);
-      opacity: 0; animation: fadeUp .8s ease .3s forwards;
-    }
-    .ld-bar  { width: 200px; height: 1px; background: rgba(255,255,255,.1); overflow: hidden; }
-    .ld-fill {
-      height: 100%; background: var(--gold-l);
-      transform: scaleX(0); transform-origin: left;
-      animation: fillBar 1.8s cubic-bezier(.4,0,.2,1) .4s forwards;
-    }
-    .ld-sub {
-      font-size: 9px; letter-spacing: 4px; color: rgba(255,255,255,.3); text-transform: uppercase;
-      opacity: 0; animation: fadeUp .8s ease .6s forwards;
-    }
-    @keyframes fillBar { to { transform: scaleX(1); } }
     @keyframes fadeUp  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
     /* refined one-time hero entrance — gentle blur-focus + rise */
     @keyframes heroIn { from { opacity:0; transform:translateY(30px); filter:blur(8px); } to { opacity:1; transform:translateY(0); filter:blur(0); } }
@@ -108,8 +84,6 @@
         opacity: 1 !important; transform: none !important; filter: none !important;
       }
     }
-    #loader.done { animation: slideUp .9s cubic-bezier(.7,0,1,1) forwards; }
-    @keyframes slideUp { to { transform: translateY(-100%); } }
 
     /* ── NAV ── */
     nav {
@@ -218,7 +192,7 @@
     }
     .hero-tag {
       display: flex; align-items: center; gap: 14px; margin-bottom: 26px;
-      opacity: 0; animation: fadeUp 1s ease 1.8s forwards;
+      opacity: 0; animation: fadeUp 1s ease .15s forwards;
     }
     .hero-tag-line { width: 40px; height: 1px; background: var(--gold-l); flex-shrink: 0; }
     .hero-tag span {
@@ -230,14 +204,14 @@
       font-size: clamp(52px, 8.6vw, 134px);
       font-weight: 300; line-height: .92; letter-spacing: -1.5px; color: var(--cream);
       max-width: 15ch;
-      opacity: 0; animation: heroIn 1.5s cubic-bezier(.16,1,.3,1) 2s forwards;
+      opacity: 0; animation: heroIn 1.5s cubic-bezier(.16,1,.3,1) .3s forwards;
     }
     .hero-h1 em { font-style: italic; color: var(--gold-l); }
     .hero-bottom {
       display: flex; align-items: flex-end; justify-content: space-between; gap: 36px;
       margin-top: 44px; padding-top: 34px;
       border-top: 1px solid rgba(250,247,242,.15); flex-wrap: wrap;
-      opacity: 0; animation: fadeUp 1s ease 2.5s forwards;
+      opacity: 0; animation: fadeUp 1s ease .7s forwards;
     }
     .hero-desc { max-width: 300px; font-size: 12px; line-height: 1.9; color: rgba(250,247,242,.62); }
     .hero-stats { display: flex; gap: 42px; }
@@ -276,7 +250,7 @@
       width: 320px; padding: 22px 22px 18px;
       background: rgba(26,20,16,.55); backdrop-filter: blur(10px);
       border: 1px solid rgba(196,163,90,.38);
-      opacity: 0; animation: fadeUp 1s ease 2.7s forwards;
+      opacity: 0; animation: fadeUp 1s ease .85s forwards;
     }
     .hero-form .hf-lead {
       font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 600;
@@ -327,7 +301,7 @@
     .scroll-hint {
       position: absolute; right: 40px; bottom: 56px; z-index: 2;
       display: flex; flex-direction: column; align-items: center; gap: 12px;
-      opacity: 0; animation: fadeUp 1s ease 3.1s forwards;
+      opacity: 0; animation: fadeUp 1s ease 1.1s forwards;
     }
     .scroll-hint span { font-size: 8px; letter-spacing: 4px; text-transform: uppercase; color: rgba(250,247,242,.5); writing-mode: vertical-rl; }
     .scroll-hint::after { content: ''; width: 1px; height: 46px; background: linear-gradient(to bottom, var(--gold-l), transparent); }
@@ -648,10 +622,56 @@
       .hero-form input, .hero-form select { font-size: 16px; padding-top: 15px; padding-bottom: 15px; }
       .cf-submit, .hero-form .hf-btn { min-height: 52px; }
       .mcb-item { min-height: 52px; }
+      .cf-check input[type="checkbox"],
+      .hero-form .cf-check input[type="checkbox"] { flex: 0 0 20px; width: 20px; height: 20px; }
+      .cf-check input[type="checkbox"]:checked::after,
+      .hero-form .cf-check input[type="checkbox"]:checked::after { left: 6px; top: 2px; width: 6px; height: 11px; }
+      .cf-check { font-size: 11px; }
+      .hero-form .cf-check { font-size: 10px; }
     }
     .cf-consent { margin-top: 14px; font-size: 10px; line-height: 1.7; letter-spacing: .3px; color: rgba(26,20,16,.5); }
     .cf-consent a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(154,123,63,.35); transition: color .3s; }
     .cf-consent a:hover { color: var(--ink); }
+
+    /* ── CONSENT / QUALIFIER CHECKBOXES ── */
+    .cf-checks { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .cf-check {
+      display: flex; align-items: flex-start; gap: 11px; cursor: pointer;
+      font-family: 'Montserrat', sans-serif; font-weight: 300;
+      font-size: 10.5px; line-height: 1.65; letter-spacing: .3px; color: rgba(26,20,16,.62);
+    }
+    .cf-check input[type="checkbox"] {
+      appearance: none; -webkit-appearance: none;
+      flex: 0 0 16px; width: 16px; height: 16px; margin: 1px 0 0; padding: 0;
+      position: relative; cursor: pointer;
+      background: rgba(255,255,255,.55); border: 1px solid rgba(154,123,63,.4);
+      transition: background-color .25s, border-color .25s;
+    }
+    .cf-check input[type="checkbox"]:checked { background: var(--gold); border-color: var(--gold); }
+    .cf-check input[type="checkbox"]:checked::after {
+      content: ''; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px;
+      border: solid var(--white); border-width: 0 1.6px 1.6px 0; transform: rotate(45deg);
+    }
+    .cf-check input[type="checkbox"]:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .cf-check input[type="checkbox"].invalid { border-color: #b3261e; background: rgba(179,38,30,.07); }
+    .cf-check a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(154,123,63,.35); }
+    .cf-check .req { color: var(--gold); }
+
+    /* dark-glass variant inside the hero card */
+    .hero-form .cf-checks { margin-top: 5px; gap: 7px; }
+    .hero-form .cf-check {
+      font-size: 9px; line-height: 1.5; gap: 8px; color: rgba(250,247,242,.62);
+    }
+    .hero-form .cf-check input[type="checkbox"] {
+      flex: 0 0 14px; width: 14px; height: 14px;
+      background: rgba(250,247,242,.06); border-color: rgba(250,247,242,.35);
+    }
+    .hero-form .cf-check input[type="checkbox"]:checked { background: var(--gold-l); border-color: var(--gold-l); }
+    .hero-form .cf-check input[type="checkbox"]:checked::after {
+      left: 3.5px; top: 1px; width: 4px; height: 8px; border-color: var(--ink);
+    }
+    .hero-form .cf-check input[type="checkbox"].invalid { border-color: #c9564e; background: rgba(201,86,78,.12); }
+    .hero-form .cf-check .req { color: var(--gold-l); }
 
     /* ── TIME-BASED POPUP ── */
     .lead-popup {
@@ -776,11 +796,6 @@
         padding-left: max(40px, env(safe-area-inset-left));
         padding-right: max(40px, env(safe-area-inset-right));
       }
-
-      /* loader — fit the wide logo on small screens */
-      #loader { padding: 0 24px; }
-      .ld-logo { font-size: 15px; letter-spacing: 4px; text-align: center; line-height: 1.7; }
-      .ld-bar { width: 150px; }
 
       /* hero */
       .hero { min-height: 100svh; }
@@ -929,13 +944,6 @@
 </head>
 <body>
 
-<!-- LOADER -->
-<div id="loader">
-  <div class="ld-logo">The Westin Residences</div>
-  <div class="ld-bar"><div class="ld-fill"></div></div>
-  <div class="ld-sub">Gurugram · India</div>
-</div>
-
 <!-- NAV -->
 <nav id="nav">
   <a class="nav-logo" href="#">The <em>Westin</em> Residences</a>
@@ -998,6 +1006,16 @@
             <option>4 BHK Residence</option>
             <option>Penthouse</option>
           </select>
+        </div>
+        <div class="cf-checks">
+          <label class="cf-check">
+            <input type="checkbox" name="marketingConsent" value="Yes" required />
+            <span>I agree to receive calls, SMS &amp; WhatsApp from the marketing team, including on a DNC/NDNC number.&nbsp;<span class="req">*</span></span>
+          </label>
+          <label class="cf-check">
+            <input type="checkbox" name="budgetAbove7Cr" value="Yes" />
+            <span>My budget is ₹7 Cr or above.</span>
+          </label>
         </div>
         <button type="submit" class="cf-submit hf-btn">Request Callback →</button>
         <div class="hf-note">A Westin relationship manager will call you · private, no spam.</div>
@@ -1372,6 +1390,16 @@
       <input type="hidden" name="utm_content" />
       <input type="hidden" name="page_url" />
       <input type="hidden" name="referrer" />
+      <div class="cf-checks">
+        <label class="cf-check">
+          <input type="checkbox" name="marketingConsent" value="Yes" required />
+          <span>Yes, I consent to being contacted by the marketing team by phone call, SMS and WhatsApp about this project — including on a number registered with DNC/NDNC.&nbsp;<span class="req">*</span></span>
+        </label>
+        <label class="cf-check">
+          <input type="checkbox" name="budgetAbove7Cr" value="Yes" />
+          <span>My budget for this purchase is ₹7 Cr or above.</span>
+        </label>
+      </div>
       <button type="submit" class="cf-submit" id="leadSubmit">Send Me the Price &amp; Floor Plans &nbsp;→</button>
       <p class="cf-consent">By submitting this form, you agree to be contacted regarding your enquiry and accept our <a href="privacy.html">Privacy Policy</a> &amp; <a href="terms.html">Terms &amp; Conditions</a>.</p>
       <p style="font-size:.75rem;color:#888;margin:.5rem 0 0;line-height:1.5;">Your information will be handled by <strong>Realty Unplugged</strong>, an Authorized Channel Partner for Whiteland Corporation. This is not the official website of The Westin Residences or Whiteland Corporation.</p>
@@ -1413,6 +1441,16 @@
         <input type="hidden" name="utm_content" />
         <input type="hidden" name="page_url" />
         <input type="hidden" name="referrer" />
+        <div class="cf-checks">
+          <label class="cf-check">
+            <input type="checkbox" name="marketingConsent" value="Yes" required />
+            <span>Yes, I consent to calls, SMS and WhatsApp from the marketing team about this project — including on a DNC/NDNC-registered number.&nbsp;<span class="req">*</span></span>
+          </label>
+          <label class="cf-check">
+            <input type="checkbox" name="budgetAbove7Cr" value="Yes" />
+            <span>My budget for this purchase is ₹7 Cr or above.</span>
+          </label>
+        </div>
         <button type="submit" class="cf-submit">Get Price &amp; Floor Plans &nbsp;→</button>
         <p class="cf-consent">By submitting, you accept our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> &amp; <a href="terms.html" target="_blank" rel="noopener">Terms</a>.</p>
         <p class="cf-status" role="status" aria-live="polite"></p>
@@ -1475,12 +1513,6 @@
 </footer>
 
 <script>
-  // ── LOADER
-  const loader = document.getElementById('loader');
-  const killLoader = () => { loader.classList.add('done'); setTimeout(() => loader.remove(), 900); };
-  window.addEventListener('load', () => setTimeout(killLoader, 1800));
-  setTimeout(killLoader, 2800);
-
   // ── NAV SCROLL
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60), { passive: true });
@@ -1621,13 +1653,23 @@
       [['firstName',v=>!!v.trim()], ['phone',v=>v.replace(/\D/g,'').length>=7],
        ['email',v=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)], ['residenceType',v=>!!v]]
       .forEach(([n, test]) => { const f = form.elements[n]; if (!f) return; const bad = !test(f.value); f.classList.toggle('invalid', bad); if (bad) ok = false; });
+      const consent = form.elements['marketingConsent'];
+      const noConsent = !!consent && !consent.checked;
+      if (consent) consent.classList.toggle('invalid', noConsent);
       if (!ok) { setStatus('Please complete all required fields with a valid email and phone.', 'err'); return; }
+      if (noConsent) { setStatus('Please tick the consent box so our team is allowed to call you.', 'err'); return; }
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending…';
       setStatus('', '');
 
       const payload = new URLSearchParams(new FormData(form));
+      // Unticked checkboxes never reach FormData — write an explicit Yes/No so
+      // the sheet distinguishes "declined" from "field wasn't on the form".
+      ['marketingConsent', 'budgetAbove7Cr'].forEach(n => {
+        const f = form.elements[n];
+        if (f) payload.set(n, f.checked ? 'Yes' : 'No');
+      });
       // One event_id shared by the browser Pixel and the server relay, so Meta
       // collapses the two into a single Lead instead of double-counting it.
       const eventId = genEventId();

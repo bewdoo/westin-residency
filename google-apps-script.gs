@@ -47,6 +47,10 @@ var STATUS_EVENTS = {
 var STATUS_HEADER      = 'Status';       // you edit this column
 var STATUS_SENT_HEADER = 'Status Sent';  // written by the script — don't edit
 var CAPI_HEADER        = 'CAPI';
+// Written by header lookup, not by position, so they land correctly on sheets
+// that already have the original 15 columns plus whatever the team added.
+var CONSENT_HEADER     = 'Call Consent';
+var BUDGET_HEADER      = 'Budget 7Cr+';
 var FBP_HEADER         = 'fbp';
 var FBC_HEADER         = 'fbc';
 
@@ -100,15 +104,20 @@ function doPost(e) {
       sheet.getRange(r, sheetColumn_(sheet, CAPI_HEADER, true)).setValue(safe(capiStatus));
       sheet.getRange(r, sheetColumn_(sheet, FBP_HEADER,  true)).setValue(safe(p.fbp));
       sheet.getRange(r, sheetColumn_(sheet, FBC_HEADER,  true)).setValue(safe(p.fbc));
+      sheet.getRange(r, sheetColumn_(sheet, CONSENT_HEADER, true)).setValue(safe(p.marketingConsent));
+      sheet.getRange(r, sheetColumn_(sheet, BUDGET_HEADER,  true)).setValue(safe(p.budgetAbove7Cr));
     } catch (e) { Logger.log('column write failed: %s', e); }
 
-    var subject = 'New Westin Residences Lead — ' + (p.firstName || '') + ' ' + (p.lastName || '');
+    var subject = 'New Westin Residences Lead — ' + (p.firstName || '') + ' ' + (p.lastName || '') +
+      (String(p.budgetAbove7Cr || '').toUpperCase() === 'YES' ? '  ·  ₹7 Cr+ budget' : '');
     var body =
       'New enquiry from the website:\n\n' +
       'Name:      ' + (p.firstName || '') + ' ' + (p.lastName || '') + '\n' +
       'Phone:     ' + (p.phone || '') + '\n' +
       'Email:     ' + (p.email || '') + '\n' +
-      'Interest:  ' + (p.residenceType || '') + '\n\n' +
+      'Interest:  ' + (p.residenceType || '') + '\n' +
+      'Consent:   ' + (p.marketingConsent || '—') + '  (calls / SMS / WhatsApp)\n' +
+      '₹7 Cr+:    ' + (p.budgetAbove7Cr || '—') + '\n\n' +
       '— Attribution —\n' +
       'gclid:     ' + (p.gclid || '—') + '\n' +
       'fbclid:    ' + (p.fbclid || '—') + '\n' +
