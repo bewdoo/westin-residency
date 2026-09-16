@@ -1709,14 +1709,62 @@
   const popup = document.getElementById('leadPopup');
   wireLead(document.getElementById('popupForm'), { onSuccess: () => setTimeout(closePopup, 2600) });
 
-  // Track WhatsApp / Call taps from the sticky mobile bar as soft conversions
+  // 4b) WhatsApp / Call taps — logged to the sheet so they can be qualified later.
+  //     A tap is intent, not a lead, so nothing is reported to Meta here: the
+  //     MQL/SQL you type into the Taps sheet is what becomes a conversion.
+  //     Each tap gets a short reference code, which is appended to the WhatsApp
+  //     message so an inbound chat can be matched back to the ad that paid for it.
+  const makeRef = () => {
+    const A = 'ACDEFGHJKLMNPQRSTUVWXYZ23456789';   // no O/0/I/1 — read aloud on a call
+    let s = '';
+    for (let i = 0; i < 6; i++) s += A[Math.floor(Math.random() * A.length)];
+    return 'WR-' + s;
+  };
+
+  function sendTap(channel, ref, eventId) {
+    const attr = getAttribution();
+    const p = new URLSearchParams();
+    p.set('type',       channel);                  // 'whatsapp' | 'phone'
+    p.set('ref',        ref);
+    p.set('event_id',   eventId);
+    p.set('event_time', String(Math.floor(Date.now() / 1000)));
+    p.set('fbp',        getCookie('_fbp') || '');
+    p.set('fbc',        getFbc() || '');
+    p.set('user_agent', navigator.userAgent);
+    p.set('page_url',   location.href);
+    p.set('referrer',   document.referrer || '');
+    ATTR_KEYS.forEach(k => p.set(k, attr[k] || ''));
+    // keepalive is essential: the browser is handing off to WhatsApp or the
+    // dialler, and a normal fetch would be cancelled mid-flight.
+    try {
+      fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', keepalive: true, body: p });
+    } catch (e) {}
+  }
+
   document.querySelectorAll('.mcb-wa').forEach(a => a.addEventListener('click', () => {
-    try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'WhatsApp' }); } catch (e) {}
-    try { if (window.gtag) gtag('event', 'whatsapp_click', { transport_type: 'beacon' }); } catch (e) {}
+    const ref = makeRef(), eventId = genEventId();
+    // Append the ref to whatever prefilled message the link already carries.
+    // Done by string surgery, not URL/searchParams: round-tripping through
+    // searchParams re-encodes every space as "+", silently rewriting the
+    // message. This preserves the original encoding byte for byte.
+    try {
+      const href = a.getAttribute('href');
+      a.setAttribute('href', href.indexOf('text=') > -1
+        ? href.replace(/text=[^&]*/, m => m + encodeURIComponent(' (Ref: ' + ref + ')'))
+        : href + (href.indexOf('?') > -1 ? '&' : '?') + 'text=' + encodeURIComponent('(Ref: ' + ref + ')'));
+    } catch (e) {}
+    try { localStorage.setItem('wr_last_ref', ref); } catch (e) {}
+    sendTap('whatsapp', ref, eventId);
+    try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'WhatsApp' }, { eventID: eventId }); } catch (e) {}
+    try { if (window.gtag) gtag('event', 'whatsapp_click', { transport_type: 'beacon', ref: ref }); } catch (e) {}
   }));
+
   document.querySelectorAll('.mcb-call').forEach(a => a.addEventListener('click', () => {
-    try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'Call' }); } catch (e) {}
-    try { if (window.gtag) gtag('event', 'phone_click', { transport_type: 'beacon' }); } catch (e) {}
+    const ref = makeRef(), eventId = genEventId();
+    try { localStorage.setItem('wr_last_ref', ref); } catch (e) {}
+    sendTap('phone', ref, eventId);
+    try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'Call' }, { eventID: eventId }); } catch (e) {}
+    try { if (window.gtag) gtag('event', 'phone_click', { transport_type: 'beacon', ref: ref }); } catch (e) {}
   }));
 
   // 5) Time-based popup — opens after 5s, once per session, never if a lead was already sent
