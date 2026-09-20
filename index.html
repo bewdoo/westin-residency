@@ -1645,6 +1645,18 @@
 
     const setStatus = (msg, cls) => { if (statusEl) { statusEl.textContent = msg; statusEl.className = 'cf-status' + (cls ? ' ' + cls : ''); } };
 
+    // FormStart — the first time a person puts focus in any field on any of the
+    // three forms. Once per session, page-wide: Meta will optimise toward this
+    // event, and one visitor tabbing through five fields must count as one, not
+    // five. focusin bubbles; focus doesn't. Honeypot excluded so bots can't fire it.
+    form.addEventListener('focusin', (e) => {
+      const f = e.target;
+      if (!f || !/^(INPUT|SELECT|TEXTAREA)$/.test(f.tagName) || f.type === 'hidden' || f.name === 'hp_ref_8821') return;
+      try { if (sessionStorage.getItem('wr_form_start')) return; sessionStorage.setItem('wr_form_start', '1'); } catch (err) {}
+      const eventId = genEventId();
+      try { if (window.fbq) fbq('trackCustom', 'FormStart', { form_id: form.id || 'form' }, { eventID: eventId }); } catch (err) {}
+    });
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (form.elements['hp_ref_8821'] && form.elements['hp_ref_8821'].value) return;   // honeypot
