@@ -278,6 +278,34 @@
     .hero-form .cf-status.ok  { color: #7DBE8A; }
     .hero-form .cf-status.err { color: #E08A82; }
     /* --- Sticky mobile Call / WhatsApp / Book bar --- */
+    /* tap-confirmation sheet — sits between an edge-swipe and the dialler */
+    .tap-confirm { position: fixed; inset: 0; z-index: 2000; display: flex;
+      align-items: flex-end; justify-content: center; }
+    .tap-confirm[hidden] { display: none; }
+    .tc-backdrop { position: absolute; inset: 0; background: rgba(12,9,6,.55); }
+    .tc-card { position: relative; width: 100%; max-width: 420px; margin: 0 12px 12px;
+      background: #fffdf9; border-radius: 16px; padding: 22px 20px 16px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35); text-align: center; }
+    .tc-q { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px;
+      line-height: 1.35; color: #1a1410; margin: 0 0 18px; }
+    .tc-go, .tc-no { display: block; width: 100%; border: 0; cursor: pointer;
+      font-family: 'Montserrat', sans-serif; letter-spacing: .5px; }
+    .tc-go { background: #9A7B3F; color: #fff; font-size: 13px; font-weight: 600;
+      padding: 15px; border-radius: 10px; margin-bottom: 4px; }
+    .tc-no { background: transparent; color: rgba(26,20,16,.5); font-size: 11.5px;
+      font-weight: 500; padding: 12px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .tc-card { animation: tcUp .22s cubic-bezier(.2,0,0,1); }
+    }
+    @keyframes tcUp { from { transform: translateY(14px); opacity: 0 } to { transform: none; opacity: 1 } }
+
+    /* consent: short label on screen, full wording one tap away */
+    .cf-more { background: none; border: 0; padding: 0; cursor: pointer;
+      font: inherit; color: var(--gold); text-decoration: underline;
+      text-underline-offset: 2px; }
+    .cf-fine { display: block; margin-top: 6px; opacity: .85; }
+    .cf-fine[hidden] { display: none; }
+
     .mobile-cta-bar { display: none; }
     @media (max-width: 820px) {
       .hero-form { display: none; }               /* mobile uses the sticky bar instead */
@@ -1010,7 +1038,7 @@
         <div class="cf-checks">
           <label class="cf-check">
             <input type="checkbox" name="marketingConsent" value="Yes" required />
-            <span>I agree to receive calls, SMS &amp; WhatsApp from the marketing team, including on a DNC/NDNC number.&nbsp;<span class="req">*</span></span>
+            <span>I agree to be contacted about this project.&nbsp;<span class="req">*</span> <button type="button" class="cf-more" aria-expanded="false">What this covers</button><span class="cf-fine" hidden>Calls, SMS and WhatsApp from the marketing team about The Westin Residences — including on a number registered with DNC/NDNC.</span></span>
           </label>
           <label class="cf-check">
             <input type="checkbox" name="budgetAbove7Cr" value="Yes" />
@@ -1393,7 +1421,7 @@
       <div class="cf-checks">
         <label class="cf-check">
           <input type="checkbox" name="marketingConsent" value="Yes" required />
-          <span>Yes, I consent to being contacted by the marketing team by phone call, SMS and WhatsApp about this project — including on a number registered with DNC/NDNC.&nbsp;<span class="req">*</span></span>
+          <span>I agree to be contacted about this project.&nbsp;<span class="req">*</span> <button type="button" class="cf-more" aria-expanded="false">What this covers</button><span class="cf-fine" hidden>Calls, SMS and WhatsApp from the marketing team about The Westin Residences — including on a number registered with DNC/NDNC.</span></span>
         </label>
         <label class="cf-check">
           <input type="checkbox" name="budgetAbove7Cr" value="Yes" />
@@ -1444,7 +1472,7 @@
         <div class="cf-checks">
           <label class="cf-check">
             <input type="checkbox" name="marketingConsent" value="Yes" required />
-            <span>Yes, I consent to calls, SMS and WhatsApp from the marketing team about this project — including on a DNC/NDNC-registered number.&nbsp;<span class="req">*</span></span>
+            <span>I agree to be contacted about this project.&nbsp;<span class="req">*</span> <button type="button" class="cf-more" aria-expanded="false">What this covers</button><span class="cf-fine" hidden>Calls, SMS and WhatsApp from the marketing team about The Westin Residences — including on a number registered with DNC/NDNC.</span></span>
           </label>
           <label class="cf-check">
             <input type="checkbox" name="budgetAbove7Cr" value="Yes" />
@@ -1715,6 +1743,19 @@
     try { if (window.gtag) gtag('event', 'generate_lead', { currency: 'INR', value: 0 }); } catch (e) {} // GA4
   }
 
+  // The "What this covers" toggle lives inside a <label>, so a bare click
+  // would also flip the checkbox it sits in. Stop it at the button.
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.cf-more');
+    if (!b) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const fine = b.parentElement.querySelector('.cf-fine');
+    if (!fine) return;
+    fine.hidden = !fine.hidden;
+    b.setAttribute('aria-expanded', String(!fine.hidden));
+  });
+
   // 4) Wire both forms
   wireLead(document.getElementById('leadForm'));
   wireLead(document.getElementById('heroForm'));
@@ -1753,7 +1794,60 @@
     } catch (e) {}
   }
 
-  document.querySelectorAll('.mcb-wa').forEach(a => a.addEventListener('click', () => {
+  // ── Tap confirmation ───────────────────────────────────────────────────
+  // The contact bar is pinned to the bottom edge, which is exactly where a
+  // thumb rests. 376 taps in a week produced zero calls and zero messages —
+  // they were edge-swipes, not intent. One confirm step between the tap and
+  // the dialler turns Contact back into a signal worth optimising toward.
+  const confirmSheet = (() => {
+    const el = document.createElement('div');
+    el.className = 'tap-confirm';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.hidden = true;
+    el.innerHTML =
+      '<div class="tc-backdrop"></div>' +
+      '<div class="tc-card">' +
+        '<p class="tc-q"></p>' +
+        '<button type="button" class="tc-go"></button>' +
+        '<button type="button" class="tc-no">Not now</button>' +
+      '</div>';
+    document.body.appendChild(el);
+
+    const q = el.querySelector('.tc-q'), go = el.querySelector('.tc-go'), no = el.querySelector('.tc-no');
+    let onGo = null, lastFocus = null;
+
+    const close = () => {
+      el.hidden = true;
+      onGo = null;
+      if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+    };
+    no.addEventListener('click', close);
+    el.querySelector('.tc-backdrop').addEventListener('click', close);
+    document.addEventListener('keydown', e => { if (!el.hidden && e.key === 'Escape') close(); });
+    go.addEventListener('click', () => { const fn = onGo; close(); if (fn) fn(); });
+
+    return (question, cta, proceed) => {
+      q.textContent = question;
+      go.textContent = cta;
+      onGo = proceed;
+      lastFocus = document.activeElement;
+      el.hidden = false;
+      go.focus();
+    };
+  })();
+
+  document.querySelectorAll('.mcb-wa').forEach(a => a.addEventListener('click', (ev) => {
+    // Hold the navigation until the person confirms. Everything below —
+    // sheet row, Contact pixel, GA4 event — fires only after that.
+    ev.preventDefault();
+    confirmSheet('Open WhatsApp to message the sales team?', 'Open WhatsApp', () => {
+      fireWhatsApp(a);
+      window.open(a.getAttribute('href'), '_blank', 'noopener');
+    });
+  }));
+
+  function fireWhatsApp(a) {
     const ref = makeRef(), eventId = genEventId();
     // Append the ref to whatever prefilled message the link already carries.
     // Done by string surgery, not URL/searchParams: round-tripping through
@@ -1769,14 +1863,18 @@
     sendTap('whatsapp', ref, eventId);
     try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'WhatsApp' }, { eventID: eventId }); } catch (e) {}
     try { if (window.gtag) gtag('event', 'whatsapp_click', { transport_type: 'beacon', ref: ref }); } catch (e) {}
-  }));
+  }
 
-  document.querySelectorAll('.mcb-call').forEach(a => a.addEventListener('click', () => {
-    const ref = makeRef(), eventId = genEventId();
-    try { localStorage.setItem('wr_last_ref', ref); } catch (e) {}
-    sendTap('phone', ref, eventId);
-    try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'Call' }, { eventID: eventId }); } catch (e) {}
-    try { if (window.gtag) gtag('event', 'phone_click', { transport_type: 'beacon', ref: ref }); } catch (e) {}
+  document.querySelectorAll('.mcb-call').forEach(a => a.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    confirmSheet('Call the sales team now?', 'Call now', () => {
+      const ref = makeRef(), eventId = genEventId();
+      try { localStorage.setItem('wr_last_ref', ref); } catch (e) {}
+      sendTap('phone', ref, eventId);
+      try { if (window.fbq)  fbq('track', 'Contact', { content_name: 'Call' }, { eventID: eventId }); } catch (e) {}
+      try { if (window.gtag) gtag('event', 'phone_click', { transport_type: 'beacon', ref: ref }); } catch (e) {}
+      location.href = a.getAttribute('href');
+    });
   }));
 
   // 5) Time-based popup — opens after 5s, once per session, never if a lead was already sent
